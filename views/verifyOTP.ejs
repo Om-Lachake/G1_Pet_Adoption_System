@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerifyOTP</title>
+</head>
+<body>
+    <form action="/verifyOTP" method="post" required>
+        <label for="email">Enter the email used to signup</label><br>
+        <input name="email" type="email" required placeholder="Email"><br>
+        <label for="OTP">Enter the OTP received in the email of your registered account</label><br>
+        <input name="OTP" type="text" required placeholder="OTP"><br>
+        <input name="submit" type="submit">
+    </form>
+    <p>If you have not received the OTP <a href="/resendOTP">click here</a></p>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up</title>
+</head>
+<body>
+    <h2>Sign Up</h2>
+    <form action="/signup" method="post" required>
+        <label for="email">EMAIL</label><br>
+        <input name="email" type="text" id="email" required placeholder="enter your email"><br>
+        <label for="password">PASSWORD</label><br>
+        <input name="password" type="password" id="passowrd" required placeholder="enter password"><br>
+        <label for="password">Retype PASSWORD</label><br>
+        <input name="rpassword" type="password" id="rpassowrd" required placeholder="enter password again"><br>
+        <input name="submit" type="submit" onclick="clearfield()">
+    </form>
+    <a href="/login">Login</a><br>
+    <a href="/auth/google">Sign in with Google</a>
+</body>
+</html>
