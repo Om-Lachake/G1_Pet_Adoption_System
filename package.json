@@ -1,31 +1,37 @@
 {
-  "name": "login",
+  "name": "server",
   "version": "1.0.0",
-  "main": "app.js",
+  "description": "",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "server.js",
+    "dev": "nodemon server.js"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
+    "cloudinary": "^2.5.1",
     "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
-    "express": "^4.21.0",
+    "express": "^4.21.1",
     "express-flash": "^0.0.2",
-    "express-session": "^1.18.0",
+    "express-session": "^1.18.1",
     "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.6.3",
-    "nodemailer": "^6.9.15",
-    "nodemon": "^3.1.5",
+    "mongoose": "^8.8.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.16",
+    "nodemon": "^3.1.7",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.2"
   }
 }

@@ -7,15 +7,6 @@ require('dotenv').config()
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
-
-//render pages
-async function getverifyOTP(req,res){
-    res.render("verifyOTP")
-}
-async function getResendOTP(req,res){
-    res.render("resendOTP")
-}
-
 //set up for sending OTP verification emails
 const setGmailForOTP = async () => {
     try {
@@ -49,7 +40,10 @@ const setGmailForOTP = async () => {
         });
         return transporter;
     } catch (error) {
-        return error
+        res.json({
+            success:false,
+            message:error.message,
+        })
     }
 }
 
@@ -75,7 +69,10 @@ const sendGmailOTP = async ({_id,email},res) => {
         let emailTransporter = await setGmailForOTP();
         await emailTransporter.sendMail(mailOptions); //send OTP email
     } catch (error) {
-        console.log("ERROR: ",error)
+        res.json({
+            success:false,
+            message:error.message,
+        })
     }
 }
 
@@ -84,32 +81,33 @@ async function checkOTP(req,res){
     try {
         const {email,OTP}=req.body;
         if(!email || !OTP) {
-            throw Error("empty OTP details");
+            return res.status(400).json({ success: false, message: "Empty OTP details" });
         } else { //check for OTP correctness
             const OTPverificationRecords=await OTPverification.find({email:email});
             if(OTPverificationRecords.length<=0) {
-                throw new Error("account is either invalid or already been verified");
+                return res.status(400).json({ success: false, message: "Account is either invalid or already been verified" });
             } else {
                 const {expireAt}=OTPverificationRecords[0];
                 const hashedOTP=OTPverificationRecords[0].otp;
                 if(expireAt < Date.now()) {
                     await OTPverification.deleteMany({email:email});
-                    throw new Error("OTP has been expired,please request again") 
+                    return res.status(400).json({ success: false, message: "OTP has been expired, please request again" }); 
                 } else {
                     const validOTP=bcrypt.compare(OTP,hashedOTP);
                     if(!validOTP) {
-                        throw new Error("Invalid OTP, try again")
+                        return res.status(404).json({ success: false, message: "Invalid OTP, try again" });
                     } else { //verify user
                         await loginschema.updateOne({email:email},{verified:true});
                         await OTPverification.deleteMany({email:email});
-                        res.redirect("/login") //redirect to login after verification
+                        //res.redirect("/login") //redirect to login after verification
+                        res.json({success : true,message:"verified",isVerified:true,user:{email:email,isVerified:true}})
                     }
                 }
             }
         }
     } catch (error) {
         res.json({
-            status:"FAILED",
+            success:false,
             message:error.message,
         })
     }
@@ -121,19 +119,19 @@ async function postResendOTP(req,res) {
         const email=req.body.email;
         const user = await loginschema.findOne({email:email}); //get user through email
         if(!user) {
-            throw new Error("no such user exists");
+            return res.status(404).json({ success:false, message: "No such user exists" });
         } else {
             await OTPverification.deleteMany({email:email});
             const data={
                 _id:user._id,
                 email:email,
             }
-            console.log(data);
-            await sendOTPVerificationEmail(data,res); //send OTP email again
+            await sendGmailOTP(data,res); //send OTP email again
+            res.json({success:true, message: "Email sent 12332,4"})
         }
     } catch (error) {
         res.json({
-            status:"FAILED",
+            success:false,
             message:error.message,
         })
     }
@@ -141,8 +139,6 @@ async function postResendOTP(req,res) {
 
 //export modules
 module.exports={
-    getverifyOTP,
-    getResendOTP,
     checkOTP,
     postResendOTP,
     setGmailForOTP,

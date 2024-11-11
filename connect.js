@@ -8,6 +8,3 @@ const connectDB = (url)=>{
 
 //export module
 module.exports=connectDB
-
-
-

@@ -1,7 +1,7 @@
 //imports
 require('dotenv').config()
 const passport=require("passport");
-const loginschema = require('../models/loginschema');
+const loginschema = require('../models/loginschema.js');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const {setUser,getUser} = require("../service/auth.js")
 
@@ -39,4 +39,4 @@ passport.serializeUser(function({user},done){
 passport.deserializeUser(async (id,done)=>{
   const user=await loginschema.findOne({id:id});
   done(null,user)
-}) 
+})

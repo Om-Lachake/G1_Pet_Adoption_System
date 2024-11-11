@@ -1,4 +1,3 @@
-//create db schema for OTP details
 const mongoose=require('mongoose')
 const OTPschema=new mongoose.Schema({
     userID:{
