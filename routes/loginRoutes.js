@@ -5,41 +5,36 @@ const router=express.Router();
 const mongoose=require("mongoose")
 const bcrypt=require("bcrypt")
 const {setUser,getUser} = require("../service/auth.js")
-const loginschema=require('../models/loginschema')
-require("../middleware/authgoogle")
+const loginschema=require('../models/loginschema.js')
+require("../middleware/authgoogle.js")
 require('dotenv').config()
 
 //import functions from login controller
 const {
-    getHome,
-    getLogin,
-    getSignup,
     createLoginData,
     checkLoginCredential,
-    getForgotPassword,
-    getNewPassword,
     postNewPassword,
     postForgotPassword,
-    getPassword,
     postPassword
 }=require('../controllers/loginControllers')
 //import functions from OTP controller
 const {
-    getverifyOTP,
     checkOTP,
-    getResendOTP,
     postResendOTP
 } = require('../controllers/OTPControllers')
-
+const {restrictToLoggedInUserOnly} = require('../middleware/auth.js')
 //routing
-router.get("/",getHome)
-router.get("/signup",getSignup).post('/signup',createLoginData)
-router.get("/login",getLogin).post('/login', checkLoginCredential)
-router.get("/verifyOTP",getverifyOTP).post("/verifyOTP",checkOTP)
-router.get("/resendOTP",getResendOTP).post("/resendOTP",postResendOTP)
-router.get("/newpassword",getNewPassword).post("/newpassword",postNewPassword)
-router.get("/forgotpassword",getForgotPassword).post("/forgotpassword",postForgotPassword)
-router.get("/password",getPassword).post("/password",postPassword)
+router.get('/check-auth', restrictToLoggedInUserOnly, (req, res) => {
+    // If the user passed the middleware check, return user info
+    res.status(200).json({ success: true, message: "User authenticated", user: req.user });
+  });
+router.post('/signup',createLoginData)
+router.post('/login', checkLoginCredential)
+router.post("/verifyOTP",checkOTP)
+router.post("/resendOTP",postResendOTP)
+router.post("/newpassword",postNewPassword)
+router.post("/forgotpassword",postForgotPassword)
+router.post("/password",postPassword)
 router.get("/auth/google",passport.authenticate('google',{scope:['email','profile']})) //authenticate for google OAuth2
 router.get("/happytails/main", 
     passport.authenticate('google', { 
@@ -47,29 +42,28 @@ router.get("/happytails/main",
         failureRedirect: '/',
      }), 
     async (req, res) => {
-        const token=req.user.token //cookie created from the middleware
-        const firstTime=req.user.firstTime
-        const email=req.user.user.email
-        const thatUser = await loginschema.findOne({email:email}); //check if user exists
-        if(firstTime) {
-            res.user=thatUser;
-            res.cookie("uid",token,{httpOnly:true}) //create cookie
-            res.redirect('/password') //redirect to create password
-        }
-        else {
-            res.cookie("uid",token,{httpOnly:true}) //create cookie
-            res.redirect('/happytails/user/main'); //redirect to main page
-        }
-        
+        const token = req.user.token;
+        const firstTime = req.user.firstTime;
+        const message = firstTime ? "create password before login" : "logged in successfully";
+
+        // Generate the script for postMessage
+        const script = `
+          <script>
+            window.opener.postMessage(
+              ${JSON.stringify({ success: true, firsttime: firstTime, message, token })},
+              "http://localhost:5173"
+            );
+            window.close();
+          </script>
+        `;
+
+        // Send the HTML with the script to the client
+        res.send(script);
     }
 );
-router.get("/auth/logout", (req, res) => {
-    req.session.destroy(function() {
-        res.clearCookie("connect.sid"); //clear cookie after logout
-        res.clearCookie('uid')
-        res.redirect("/"); //back to home page
-    });
-});
-
+router.get('/auth/logout', (req, res) => {
+    res.clearCookie('uid', { path: '/', httpOnly: true, sameSite: 'strict' });
+    return res.status(200).json({ success: true, message: 'Logged out successfully!' });
+  });
 //export module
 module.exports=router;
