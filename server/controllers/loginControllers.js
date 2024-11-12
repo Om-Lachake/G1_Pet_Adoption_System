@@ -8,77 +8,59 @@ const {setUser} = require("../service/auth.js")
 const passport=require("passport")
 
 
-//render pages
-async function getHome(req,res){
-    res.render("home")
-}
-async function getLogin(req,res){
-    //if user has already logged in direct to the main page
-    if(req.cookies!==null && req.cookies.uid!==undefined) return res.redirect("/happytails/user/main")
-    else return res.render("login")
-}
-async function getSignup(req,res){
-    res.render("signup")
-}
-async function getMain(req,res){
-    res.render("main")
-}
-async function getForgotPassword(req,res){
-    res.render("forgotpassword")
-}
-async function getNewPassword(req,res){
-    res.render("newpassword")
-}
-async function getPassword(req,res) {
-    res.render("password")
-}
-
 //for sign up process
 async function createLoginData(req, res) {
     try {
-        const existingUser = await loginschema.findOne({email:req.body.email });
-        if (existingUser) { //if user already exist
-            throw new Error("User is already registered, use a different email");
-        } else if (req.body.password !== req.body.rpassword) { //if password donot match
-            res.render("signup", { message: "Passwords do not match." });
-            return;
+        const existingUser = await loginschema.findOne({ email: req.body.email });
+        
+        if (existingUser) { // If user already exists
+            return res.json({success:false, message: "User is already registered, use a different email" });
+        } else if (req.body.password !== req.body.rpassword) { // If passwords do not match
+            return res.json({success:false, message: "Passwords do not match." });
+            
         } else {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            const newUser = new loginschema({ //create entry in db
-                id:Date.now(),
+            const newUser = new loginschema({ // Create entry in DB
+                username: req.body.username,
+                id: Date.now(),
                 email: req.body.email,
                 password: hashedPassword,
                 verified: false,
             });
             const result = await newUser.save();
-            await sendGmailOTP(result,res); //send verification OTP
-            res.render("verifyOTP")
+            await sendGmailOTP(result, res); // Send verification OTP
+            return res.json({success:true,message:"email sent successfully"})
         }
     } catch (error) {
-        res.render("signup", { message: "An error occurred during signup." });
+        return res.json({success:false, message: "An error occurred during signup.", error: error.message });
     }
 }
+
 
 //for login process
 async function checkLoginCredential(req, res) {
     try {
         const user = await loginschema.findOne({ email: req.body.email });
         if (!user) { //if no user exists
-            return res.render("login", { error: "Invalid email or password." });
+            return res.json({success:false, message: "Invalid email or password." }); //render login
         } 
         if (!user.verified) { //if user has not been verified
-            return res.redirect("/resentOTP", { error: "User is not verified" });
+            return res.json({success:false, message: "User is not verified" }); //render resendotp
         }
         const isPasswordMatch = await bcrypt.compare(req.body.password, user.password);
         if (isPasswordMatch) {
             const token=setUser(user)
-            res.cookie("uid",token) //create cookie
-            return res.redirect("/happytails/user/main"); //redirect to main page
+            res.cookie("uid", token, { 
+                httpOnly: true, // The cookie is not accessible via JavaScript
+                sameSite: "strict", // Restrict the cookie to same-site requests
+                path: "/"
+              });
+            return res.json({success:true,message:"logged in successfully",user:user})//create cookie
         } else {
-            return res.render("login", { error: "Invalid email or password." });
+            return res.json({success:false, message: "Invalid email or password." }); //render login
         } 
     } catch (error) {
-        return res.render("login", { error: error.message });
+        return res.json({success:false, error: error.message }); //render login
     }
 }
 
@@ -87,36 +69,36 @@ async function postNewPassword(req,res){
     try {
         const {email,OTP}=req.body;
         if(!email || !OTP) {
-            throw Error("empty OTP details");
+            return res.json({success:false, message: "Empty OTP details" });
         } else { //verify OTP 
             const OTPverificationRecords=await OTPverification.find({email:email});
             if(OTPverificationRecords.length<=0) {
-                throw new Error("No OTP verification records found");
+                return res.json({success:false, message: "No OTP verification records found" });
             } else {
                 const {expireAt}=OTPverificationRecords[0];
                 const hashedOTP=OTPverificationRecords[0].otp;
                 if(expireAt < Date.now()) {
                     await OTPverification.deleteMany({email:email});
-                    throw new Error("OTP has been expired,please request again") 
+                    return res.json({success:false, message: "OTP has expired, please request again" });
                 } else {
                     const validOTP=bcrypt.compare(OTP,hashedOTP);
                     await OTPverification.deleteMany({email:email});
                     if(!validOTP) {
-                        throw new Error("Invalid OTP, try again")
+                        return res.json({success:false, message: "Invalid OTP, try again" });
                     } else {
                         const password=req.body.password;
                         const rpassword=req.body.rpassword;
                         if(password!==rpassword) {
-                            throw new Error("passwords do not match")
+                            return res.json({success:false, message: "Passwords do not match" });
                         } else {
                             const user=await loginschema.findOne({email:email});
                             if(!user) {
-                                throw new Error("No such user found")
+                                return res.json({success:false, message: "No such user found" });
                             } else {
                                 const newhashedPassword = await bcrypt.hash(req.body.password, 10);
                                 user.password=newhashedPassword //update password
                                 await user.save()
-                                res.redirect("login");
+                                return res.status(200).json({success:true,message: "Password Changed Successfully", redirectTo: "/login" });
                             }
                         }
                     }
@@ -124,8 +106,8 @@ async function postNewPassword(req,res){
             }
         }
     } catch (error) {
-        res.json({
-            status:"FAILED",
+        return res.json({
+            success:false,
             message:error.message,
         })
     }
@@ -137,7 +119,10 @@ async function postForgotPassword(req,res) {
         const email=req.body.email;
         const user = await loginschema.findOne({email:email}); //find user
         if(!user) {
-            throw new Error("no such user exists");
+            return res.json({
+                success: false,
+                message: "User doesn't exists! Please register first",
+              });
         } else {
             await OTPverification.deleteMany({email:email});
             const data={
@@ -145,11 +130,11 @@ async function postForgotPassword(req,res) {
                 email:email,
             }
             await sendGmailOTP(data,res); //send OTP
-            res.redirect("/newpassword")
+            res.status(200).json({ success:true,message: "Enter new password", redirectTo: "/newpassword" });
         }
     } catch (error) {
-        res.json({
-            status:"FAILED",
+        return res.json({
+            success: false,
             message:error.message,
         })
     }
@@ -159,10 +144,13 @@ async function postForgotPassword(req,res) {
 async function logout(req,res) {
     try {
         res.clearCookie("uid") //clear cookies
-        return res.redirect("/login") //redirect to login
+        return res.json({
+            success: true,
+            message:"Logged Out successfully"
+        }) //redirect to login
     } catch (error) {
         res.json({
-            status:"FAILED",
+            success: false,
             message:error.message,
         })
     }
@@ -174,34 +162,33 @@ async function postPassword(req,res) {
     const password=req.body.password;
     const rpassword=req.body.rpassword;
     if(password!==rpassword) {
-        throw new Error("passwords do not match")
+        return res.json({
+            success: false,
+            message: "Password doesn't match",
+          });
     } else {
         const user=await loginschema.findOne({email:email});
         if(!user) {
-            throw new Error("No such user found")
+            return res.json({
+                success: false,
+                message: "User doesn't exists! Please register first",
+              });
         } else {
             const newhashedPassword = await bcrypt.hash(req.body.password, 10);
             console.log(user.password)
             user.password=newhashedPassword
             await user.save()
-            res.redirect("/happytails/user/main");
+            res.status(200).json({ success:true,message: "User registered", redirectTo: "/happytails/user/main" });
         }
     }
 }
 
 //export modules
 module.exports={
-    getHome,
-    getLogin,
-    getSignup,
     createLoginData,
     checkLoginCredential,
-    getMain,
-    getForgotPassword,
-    getNewPassword,
     postNewPassword,
     postForgotPassword,
     logout,
-    getPassword,
     postPassword,
 }

@@ -1,9 +1,12 @@
-//create db schema for login details
-const mongoose=require("mongoose")
+const mongoose = require("mongoose")
+
 const loginschema=new mongoose.Schema({
     id:{
         type:String,
         default:null
+    },
+    username: {
+      type: String,
     },
     email:{
         type:String,
@@ -18,6 +21,11 @@ const loginschema=new mongoose.Schema({
     verified:{
         type:Boolean,
         default:false
+    },
+    admin:{
+        type:Boolean,
+        default:false
     }
 })
 module.exports=mongoose.model('loginschema',loginschema)
+
