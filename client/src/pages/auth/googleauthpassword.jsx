@@ -6,6 +6,7 @@ import { passwordGoogleControls } from '../../config';
 import { newgooglepassword } from '../../store/auth-slice';
 import CommonForm from '../../components/common/form';
 const initialState = {//state initialize
+  username:"",
   password:"",
   rpassword:""
 };
