@@ -27,5 +27,6 @@ const loginschema=new mongoose.Schema({
         default:false
     }
 })
+loginschema.index({ username: 1 }, { unique: true, partialFilterExpression: { username: { $ne: null } } });
 module.exports=mongoose.model('loginschema',loginschema)
 
