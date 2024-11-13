@@ -17,7 +17,6 @@ async function createLoginData(req, res) {
             return res.json({success:false, message: "User is already registered, use a different email" });
         } else if (req.body.password !== req.body.rpassword) { // If passwords do not match
             return res.json({success:false, message: "Passwords do not match." });
-            
         } else {
             const hashedPassword = await bcrypt.hash(req.body.password, 10);
             const newUser = new loginschema({ // Create entry in DB
@@ -159,6 +158,7 @@ async function logout(req,res) {
 //create password process for googleAuth
 async function postPassword(req,res) {
     const email=req.user.email;
+    const username=req.body.username;
     const password=req.body.password;
     const rpassword=req.body.rpassword;
     if(password!==rpassword) {
@@ -177,6 +177,7 @@ async function postPassword(req,res) {
             const newhashedPassword = await bcrypt.hash(req.body.password, 10);
             console.log(user.password)
             user.password=newhashedPassword
+            user.username=username
             await user.save()
             res.status(200).json({ success:true,message: "User registered", redirectTo: "/happytails/user/main" });
         }

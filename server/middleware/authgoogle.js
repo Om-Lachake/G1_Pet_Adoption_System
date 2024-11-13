@@ -21,6 +21,7 @@ passport.use(new GoogleStrategy({
       await loginschema.deleteOne({email:email});
       const newuser= new loginschema({
         id:id,
+        username:id,
         email:email,
         verified:true,
       })
