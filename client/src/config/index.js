@@ -132,3 +132,45 @@ export const newPasswordControls = [//new password form
   },
 ];
 
+export const addPetFormElements = [
+  {
+    label: "Name",
+    name: "name",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter pet name",
+  },
+  {
+    label: "Type",
+    name: "type",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter pet type",
+  },
+  {
+    label: "Gender",
+    name: "gender",
+    componentType: "select",
+    type: "text",
+    options: [
+      { id: "male", label: "Male" },
+      { id: "female", label: "Female" },
+    ],
+  },
+  {
+    label: "Age",
+    name: "age",
+    componentType: "input",
+    type: "number",
+    placeholder: "Enter pet age",
+  },
+  {
+    label: "Description",
+    name: "description",
+    componentType: "textarea",
+    placeholder: "Enter pet description",
+  }
+];
+
+
+
