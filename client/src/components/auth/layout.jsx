@@ -37,7 +37,7 @@ const AuthLayout = () => {
 
   return (
     <div className="flex h-screen w-[100%]">
-      <div className="flex h-screen items-center justify-center bg-gradient-to-r from-[#23E4FF] to-blue-600 w-1/2">
+      <div className="hidden lg:flex h-screen items-center justify-center bg-gradient-to-r from-[#23E4FF] to-blue-600 w-1/2">
         <div className="max-w-md space-y-6 text-center text-primary-foreground flex flex-col justify-between items-center gap-10">
           <div className="Eyes w-full overflow-hidden">
             <div className="w-full h-full">
