@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
 import { checkAuth } from "./store/auth-slice"
 import VerifyOtp from "./pages/verification/verifyOtp"
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 function App() {
 
@@ -37,7 +38,11 @@ function App() {
 
 
   if(isLoading){
-    return <div>Loading...</div>
+    return <div className="h-screen flex items-center justify-center"><ClimbingBoxLoader
+    color={"#2563eb"}
+    loading={isLoading}
+    size={30}
+  /></div>
   }
   return (//paths for pages
     <div className="flex flex-col overflow-hidden bg-white">
@@ -56,8 +61,8 @@ function App() {
           <AdminLayout/>
         </CheckAuth>}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
+          <Route path="pets" element={<AdminProducts />} />
+          <Route path="applications" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
           
         </Route>
