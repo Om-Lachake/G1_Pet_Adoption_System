@@ -26,7 +26,11 @@ const AuthLogin = () => {
     dispatch(loginUser(formData)).then((data) => {//send request to backend
       if (data?.payload?.success) {
         toast(data?.payload?.message)
-        navigate("/shop/home") //login the user if success
+        if(data?.payload?.user?.admin) {
+          navigate("/admin/dashboard")
+        } else {
+          navigate("/shop/home")
+        }
       } else {
         toast(data?.payload?.message);
       }
@@ -46,30 +50,48 @@ const AuthLogin = () => {
     window.addEventListener("message", (event) => {
       if (event.origin !== "http://localhost:3000") return;  // Only accept messages from your backend origin
     
-      const { success, firsttime, message, token } = event.data;
+      const { success, firsttime, message, token,atoken, isadmin } = event.data;
       console.log("eventdata after login",event.data)
       if (success) {
         // Store the token in localStorage
         if (token) {
-          document.cookie = `uid=${token}; path=/; SameSite=Strict;`; // Store the token in localStorage    
-          // Redirect based on first-time status
+          document.cookie = `uid=${token}; path=/; SameSite=Strict;`;
+          console.log("boolean",isadmin)
           if (!firsttime) { //if not first time send redirect to home 
-            dispatch(setAuthenticated({ 
-              isAuthenticated: true, 
-              isVerified: true, 
-              isLoggedIn: true 
-            }));
-            navigate("/shop/home");
+            if(isadmin) {
+              console.log("here 1")
+              document.cookie = `aid=${atoken}; path=/; SameSite=Strict;`;
+              dispatch(setAuthenticated({ 
+                isAuthenticated: true, 
+                isVerified: true, 
+                isLoggedIn: true,
+                isAdmin: true 
+              }));
+              console.log("here 2")
+              setTimeout(() => {
+                navigate("/admin/dashboard");
+              }, 50);
+            } else {
+              dispatch(setAuthenticated({ 
+                isAuthenticated: true, 
+                isVerified: true, 
+                isLoggedIn: true,
+                isAdmin: false, 
+              }));
+              navigate("/shop/home");
+            }
           } else {
             dispatch(setAuthenticated({ //if first time then send to create a password first
               isAuthenticated: true, 
               isVerified: true, 
-              isLoggedIn: false 
+              isLoggedIn: false,
+              isAdmin: false 
             }));
             navigate("/googleAuthPassword");
           }
         }
       } else {
+        console.log("faill")
         toast("Authentication failed");
       }
     

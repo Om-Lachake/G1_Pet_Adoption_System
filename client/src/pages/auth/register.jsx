@@ -48,29 +48,46 @@ const AuthRegister = () => {
     window.addEventListener("message", (event) => {
       if (event.origin !== "http://localhost:3000") return;  // Only accept messages from your backend origin
     
-      const { success, firsttime, message, token } = event.data;
-      console.log("eventdata after login", event.data);
-
+      const { success, firsttime, message, token,atoken, isadmin } = event.data;
+      console.log("eventdata after login",event.data)
       if (success) {
         // Store the token in localStorage
         if (token) {
-          localStorage.setItem("uid", token); // Store the token in localStorage
-
-          // Dispatch the authentication state based on first-time status
-          dispatch(setAuthenticated({ 
-            isAuthenticated: true, 
-            isVerified: true, 
-            isLoggedIn: firsttime ? false : true 
-          }));
-
-          // Navigate based on first-time status
-          if (firsttime) { //redirect based on if firsttime or not
-            navigate("/googleAuthPassword");
+          document.cookie = `uid=${token}; path=/; SameSite=Strict;`;
+          console.log("boolean",isadmin)
+          if (!firsttime) { //if not first time send redirect to home 
+            if(isadmin) {
+              document.cookie = `aid=${atoken}; path=/; SameSite=Strict;`;
+              dispatch(setAuthenticated({ 
+                isAuthenticated: true, 
+                isVerified: true, 
+                isLoggedIn: true,
+                isAdmin: true 
+              }));
+              setTimeout(() => {
+                navigate("/admin/dashboard");
+              }, 50);
+            } else {
+              dispatch(setAuthenticated({ 
+                isAuthenticated: true, 
+                isVerified: true, 
+                isLoggedIn: true,
+                isAdmin: false, 
+              }));
+              navigate("/shop/home");
+            }
           } else {
-            navigate("/shop/home");
+            dispatch(setAuthenticated({ //if first time then send to create a password first
+              isAuthenticated: true, 
+              isVerified: true, 
+              isLoggedIn: false,
+              isAdmin: false 
+            }));
+            navigate("/googleAuthPassword");
           }
         }
       } else {
+        console.log("faill")
         toast("Authentication failed");
       }
 

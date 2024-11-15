@@ -1,11 +1,25 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";  // Import useSelector
-
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 function CheckAuth({ children }) {
-  const { isAuthenticated, isVerified, user, isLoggedIn } = useSelector(state => state.auth);  // Get the values from Redux store
-  console.log(isAuthenticated, isVerified, isLoggedIn,"in checkauth")
-
+  const { isAuthenticated, isVerified, user, isLoggedIn ,isAdmin,isLoading,isLoadingAuth,isLoadingAdmin} = useSelector(state => state.auth);  // Get the values from Redux store
+  console.log(isAuthenticated, isVerified, isLoggedIn, isAdmin,isLoadingAuth,isLoadingAdmin,"in checkauth")
   const location = useLocation();
+  if (isLoading || isLoadingAdmin || isLoadingAuth) {
+    return <div className="h-screen flex items-center justify-center"><ClimbingBoxLoader
+    color={"#2563eb"}
+    loading={isLoading}
+    size={30}
+  /></div>
+  }
+ 
+  if(!isAdmin && location.pathname === '/admin/dashboard') {
+    if(isAuthenticated && isVerified && isLoggedIn) {
+      return <Navigate to = "/shop/home"/>
+    } else {
+      return <Navigate to="/login" />;
+    }
+  }
   if (location.pathname === "/forgotpassword" || location.pathname === "/verifyOTP" || location.pathname === "/newpassword") {
     return <>{children}</>;
   }
