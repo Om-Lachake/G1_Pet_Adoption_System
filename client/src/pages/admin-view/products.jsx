@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {createPet} from '../../store/auth-slice/index'
+import AdminPetTile from '../../components/admin-view/product-tile';
 // Custom Sheet component
 const Sheet = ({ open, onOpenChange, children }) => {
   return (
@@ -119,7 +120,9 @@ const AdminProducts = () => {
         </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <AdminPetTile/>
+      </div>
 
       {/* Sheet (Sidebar) for adding new pet */}
       <Sheet open={openAddPetDialog} onOpenChange={() => setOpenAddPetDialog(false)}>
