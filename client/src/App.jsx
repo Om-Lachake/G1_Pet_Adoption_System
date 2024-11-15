@@ -20,21 +20,22 @@ import CheckAuth from "./components/common/check-auth"
 import UnAuthPage from "./pages/unauth-page"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect } from "react"
-import { checkAuth } from "./store/auth-slice"
+import { checkAdmin, checkAuth } from "./store/auth-slice"
 import VerifyOtp from "./pages/verification/verifyOtp"
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 function App() {
 
-  const {user, isAuthenticated,isLoading ,isVerified,isLoggedIn} = useSelector(state => state.auth)
+  const {user, isAuthenticated,isLoading ,isVerified,isLoggedIn, isAdmin,isLoadingAuth,isLoadingAdmin} = useSelector(state => state.auth)
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(checkAuth()); // Dispatch checkAuth to update the Redux store   checkAuth()
+    dispatch(checkAuth());
+    dispatch(checkAdmin());// Dispatch checkAuth to update the Redux store   checkAuth()
   }, [dispatch]);
 
   useEffect(() => {
-  }, [isAuthenticated, isVerified, user, isLoggedIn]); // Add dependencies for state changes
+  }, [isAuthenticated, isVerified, user, isLoggedIn, isAdmin,isLoadingAdmin,isLoadingAuth]); // Add dependencies for state changes
 
 
   if(isLoading){

@@ -6,6 +6,9 @@ const initialState = {
   isVerified: false,
   isLoggedIn:false,
   isLoading: true,
+  isAdmin: false,
+  isLoadingAuth: false,
+  isLoadingAdmin: false,
   user: null,
 };
 
@@ -136,6 +139,42 @@ export const checkAuth = createAsyncThunk(
     return response.data;
   }
 );
+
+export const checkAdmin = createAsyncThunk(
+  "/checkAdmin",
+  async (_,{rejectwithvalue}) => {
+    const response = await axios.get(
+      "http://localhost:3000/check-admin",
+      {
+        withCredentials: true,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+        },
+      }
+    );
+    return response.data;
+  }
+);
+
+export const createPet = createAsyncThunk(
+  "/admin/createPet",
+  async(formData)=>{
+    //console.log("formdata",formData);
+    const response = await axios.post(
+      "http://localhost:3000/happytails/api/pets",
+      formData,
+      {
+        withCredentials:true,
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file upload
+        },
+      }
+    );
+    //console.log(response.data)
+    return response.data;
+
+  }
+)
  
 // set variable based on action
 const authSlice = createSlice({
@@ -150,6 +189,8 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload.isAuthenticated;
       state.isVerified = action.payload.isVerified;
       state.isLoggedIn = action.payload.isLoggedIn;
+      state.isAdmin = action.payload.isAdmin;
+      console.log("setauthadmin",state.isadmin);
     },
   },
   extraReducers: (builder) => {
@@ -164,6 +205,7 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
         state.isVerified = false; // User still needs to verify OTP
         state.isLoggedIn = false;
+        state.isAdmin = false
       })
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
@@ -179,6 +221,7 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
         state.isVerified = action.payload.success;
         state.isLoggedIn = false;
+        state.isAdmin =false;
       })
       .addCase(verifyOtpAction.rejected, (state) => {
         state.isLoading = false;
@@ -195,17 +238,22 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
         state.isVerified = action.payload.success;
         state.isLoggedIn = action.payload.success; 
+        state.isAdmin = action.payload.user.admin;
+        console.log("loginuser admin",state.isAdmin);
       })
       .addCase(loginUser.rejected, (state) => {
         state.isLoading = false;
+        
       })
 
       // Check Authentication Cases
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
+        state.isLoadingAuth = true;
       })
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.isLoadingAuth = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
         state.isVerified = action.payload.success;
@@ -214,9 +262,26 @@ const authSlice = createSlice({
       .addCase(checkAuth.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
+        state.isLoadingAuth = false;
         state.isVerified = false;
         state.isLoggedIn = false;
         state.user = null;
+      })
+
+      .addCase(checkAdmin.pending, (state) => {
+        state.isLoading = true;
+        state.isLoadingAdmin = true;
+      })
+      .addCase(checkAdmin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isLoadingAdmin = false;
+        state.user = action.payload.success ? action.payload.user : null;
+        state.isAdmin = action.payload.success;
+      })
+      .addCase(checkAdmin.rejected, (state) => {
+        state.isAdmin = false;
+        state.isLoading =false;
+        state.isLoadingAdmin =false;
       })
 
       // Logout User Cases
@@ -226,6 +291,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.isVerified = false;
         state.isLoggedIn = false;
+        state.isAdmin = false;
       })
       .addCase(logoutUser.pending, (state) => {
         state.isLoading = true;
@@ -235,6 +301,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.isVerified = false;
         state.isLoggedIn = false;
+        state.isAdmin = false;
         state.user = null;
       })
       //new password cases
@@ -247,12 +314,14 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isVerified = true;
         state.isLoggedIn = false;
+        state.isAdmin = false;
       })
       .addCase(newpassword.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.isVerified = false;
         state.isLoggedIn = false;
+        state.isAdmin = false;
         state.user = null;
       })
       //new google password cases
@@ -265,6 +334,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isVerified = true;
         state.isLoggedIn = true;
+        //////////////////////////////////
       })
       .addCase(newgooglepassword.rejected, (state) => {
         state.isLoading = false;
@@ -283,6 +353,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isVerified = true;
         state.isLoggedIn = false;
+        state.isAdmin = false;
       })
       .addCase(forgotpassword.rejected, (state) => {
         state.isLoading = false;

@@ -169,7 +169,7 @@ export const addPetFormElements = [
     name: "description",
     componentType: "textarea",
     placeholder: "Enter pet description",
-  }
+  },
 ];
 
 
