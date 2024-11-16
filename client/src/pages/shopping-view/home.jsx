@@ -6,6 +6,7 @@ import { verifyOtpAction, setUser, logoutUser } from '../../store/auth-slice' //
 import Cookies from 'js-cookie'
 import axios from 'axios';
 import ShoppingHeader from './header'
+import Homepage from '../homepage/homepage'
 
 const Home = () => {
   const initialState = { email: '', OTP: '' }
@@ -39,7 +40,7 @@ const Home = () => {
   return (
     <div>
       {/* Logout button */}
-      <ShoppingHeader></ShoppingHeader>
+      <Homepage/>
       <button onClick={handleLogout}>Logout</button>
     </div>
   )
