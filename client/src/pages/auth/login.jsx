@@ -27,7 +27,7 @@ const AuthLogin = () => {
       if (data?.payload?.success) {
         toast(data?.payload?.message)
         if(data?.payload?.user?.admin) {
-          navigate("/admin/dashboard")
+          navigate("/admin/pets")
         } else {
           navigate("/shop/home")
         }
@@ -69,7 +69,7 @@ const AuthLogin = () => {
               }));
               console.log("here 2")
               setTimeout(() => {
-                navigate("/admin/dashboard");
+                navigate("/admin/pets");
               }, 50);
             } else {
               dispatch(setAuthenticated({ 
