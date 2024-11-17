@@ -65,7 +65,7 @@ const AuthRegister = () => {
                 isAdmin: true 
               }));
               setTimeout(() => {
-                navigate("/admin/dashboard");
+                navigate("/admin/pets");
               }, 50);
             } else {
               dispatch(setAuthenticated({ 

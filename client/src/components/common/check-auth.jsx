@@ -13,7 +13,7 @@ function CheckAuth({ children }) {
   /></div>
   }
  
-  if(!isAdmin && location.pathname === '/admin/dashboard') {
+  if(!isAdmin && location.pathname === '/admin/pets') {
     if(isAuthenticated && isVerified && isLoggedIn) {
       return <Navigate to = "/shop/home"/>
     } else {
@@ -43,7 +43,7 @@ function CheckAuth({ children }) {
           return <Navigate to="/login" />;
         } else {
           if (user?.admin === true) {
-            return <Navigate to="/admin/dashboard" />;
+            return <Navigate to="/admin/pets" />;
           } else {
             return <Navigate to="/shop/home" />;
           }
@@ -65,7 +65,7 @@ function CheckAuth({ children }) {
   }
 
   else if (isAuthenticated && isVerified && user?.admin === true && location.pathname.includes("shop")) {
-    return <Navigate to="/admin/dashboard" />;
+    return <Navigate to="/admin/pets" />;
   }
 
   return <>{children}</>;

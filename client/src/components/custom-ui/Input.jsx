@@ -1,4 +1,4 @@
-const Input = ({ icon: Icon,iconKeep='true',textColor='text-white',borderColor='border-blue-700' ,bgColor = 'bg-blue-500',placeHolderColor='placeholder-zinc-100', ...props }) => {
+const Input = ({ icon: Icon,iconKeep='true',textColor='text-white ',borderColor=' border-blue-700' ,bgColor = ' bg-blue-500 ',placeHolderColor='placeholder-zinc-100', ...props }) => {
 	return (
 	  <div className='relative mb-6'>
 		{iconKeep === 'true' && <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>

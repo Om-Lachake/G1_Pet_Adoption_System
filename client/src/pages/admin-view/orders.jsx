@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {Eye} from "lucide-react"
 
 const AdminOrders = () => {
   const [pendingForms, setPendingForms] = useState([]);
@@ -66,42 +67,69 @@ const AdminOrders = () => {
     }
   }; 
 
-  const renderForms = (forms) =>
-    forms.map((form) => {
+  const renderForms = (forms) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {forms.map((form) => {
       const pet = getPetById(form.petid);
       const uniqueKey = `${form._id}-${form.email}`;
+
       return (
-        <tr key={uniqueKey} className="hover:bg-gray-50">
-          <td className="border border-gray-300 p-2">{form.name}</td>
-          <td className="border border-gray-300 p-2">{form.email}</td>
-          <td className="border border-gray-300 p-2">
-            {pet ? (
-              <div
-                className="relative cursor-pointer"
-                onClick={() => setSelectedPet(pet)}
-              >
-                <img
-                  src={pet.imageUrl}
-                  alt={pet.name}
-                  className="w-full h-[100px] object-scale-down rounded-lg"
-                />
-              </div>
-            ) : (
-              "No Pet Found"
-            )}
-          </td>
-          <td className="border border-gray-300 p-2">{form.status}</td>
-          <td className="border border-gray-300 p-2">
+        <div
+          key={uniqueKey}
+          className="border border-gray-300 p-4 rounded-lg shadow hover:shadow-lg transition-shadow"
+        >
+          {/* Form Details */}
+          <div className="flex flex-col gap-2">
+            {/* Name */}
+            <div>
+              <p className="font-semibold">Name:</p>
+              <p>{form.name}</p>
+            </div>
+
+            {/* Email */}
+            <div>
+              <p className="font-semibold">Email:</p>
+              <p>{form.email}</p>
+            </div>
+
+            {/* Pet */}
+            <div>
+              <p className="font-semibold">Pet:</p>
+              {pet ? (
+                <div
+                  className="relative cursor-pointer"
+                  onClick={() => setSelectedPet(pet)}
+                >
+                  <img
+                    src={pet.imageUrl}
+                    alt={pet.name}
+                    className="w-full h-[100px] object-scale-down rounded-lg"
+                  />
+                </div>
+              ) : (
+                <p>No Pet Found</p>
+              )}
+            </div>
+
+            {/* Status */}
+            <div>
+              <p className="font-semibold">Status:</p>
+              <p>{form.status}</p>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-2 mt-4">
             {form.status === "pending" && (
               <>
                 <button
-                  className="bg-blue-500 text-white px-4 py-1 rounded mr-2"
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
                   onClick={() => updateStatus(form._id, "approved")}
                 >
                   Approve
                 </button>
                 <button
-                  className="bg-yellow-500 text-white px-4 py-1 rounded mr-2"
+                  className="bg-yellow-500 text-white px-4 py-2 rounded"
                   onClick={() => updateStatus(form._id, "rejected")}
                 >
                   Reject
@@ -109,129 +137,217 @@ const AdminOrders = () => {
               </>
             )}
             <button
-              className="bg-green-500 text-white px-4 py-1 rounded"
+              className="bg-green-500 text-white px-4 py-2 rounded"
               onClick={() => setSelectedForm(form)}
             >
               Review
             </button>
-          </td>
-        </tr>
+          </div>
+        </div>
       );
-    });
+    })}
+  </div>
+);
+
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Application Forms</h1>
+<div className="p-4">
+  <h1 className="text-2xl font-bold mb-4 text-[#013756] ">Application Forms</h1>
 
-      {error && <p className="text-red-500">{error}</p>}
+  {error && <p className="text-red-500">{error}</p>}
 
-      <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Pending Forms</h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Name</th>
-              <th className="border border-gray-300 p-2">Email</th>
-              <th className="border border-gray-300 p-2">Pet</th>
-              <th className="border border-gray-300 p-2">Status</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>{renderForms(pendingForms)}</tbody>
-        </table>
-      </section>
-
-      <section className="mb-8">
-        <h2 className="text-xl font-bold mb-4">Approved Forms</h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Name</th>
-              <th className="border border-gray-300 p-2">Email</th>
-              <th className="border border-gray-300 p-2">Pet</th>
-              <th className="border border-gray-300 p-2">Status</th>
-              <th className="border border-gray-300 p-2">Review Form</th>
-            </tr>
-          </thead>
-          <tbody>{renderForms(approvedForms)}</tbody>
-        </table>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-bold mb-4">Rejected Forms</h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Name</th>
-              <th className="border border-gray-300 p-2">Email</th>
-              <th className="border border-gray-300 p-2">Pet</th>
-              <th className="border border-gray-300 p-2">Status</th>
-              <th className="border border-gray-300 p-2">Review Form</th>
-            </tr>
-          </thead>
-          <tbody>{renderForms(rejectedForms)}</tbody>
-        </table>
-      </section>
-
-      {/* Review Form Modal */}
-      {selectedForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-md w-1/2">
-            <h2 className="text-xl font-bold mb-4">Review Form</h2>
-            <p>
-              <strong>Name:</strong> {selectedForm.name}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedForm.email}
-            </p>
-            <p>
-              <strong>Address:</strong> {selectedForm.address}
-            </p>
-            <p>
-              <strong>First Pet:</strong> {selectedForm.firstpet ? "Yes" : "No"}
-            </p>
-            <p>
-              <strong>Reason for Adoption:</strong> {selectedForm.whyadopt}
-            </p>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-              onClick={() => setSelectedForm(null)}
-            >
-              Close
-            </button>
+  {/* Pending Forms Section */}
+  <section className="mb-8  text-[#1a79af]">
+    <h2 className="text-xl font-bold mb-4 text-[#013756]">Pending Forms</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {pendingForms.map((form) => {
+        const pet = getPetById(form.petid);
+        return (
+          <div
+            key={form._id}
+            className="bg-white border border-gray-300  p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+          >
+            <p className="font-semibold ">Name: {form.name}</p>
+            <p>Email: {form.email}</p>
+            <div>
+              <p className="font-semibold">Pet:</p>
+              {pet ? (
+                <img
+                  src={pet.imageUrl}
+                  alt={pet.name}
+                  className="w-full h-[100px] object-scale-down rounded-lg"
+                  onClick={() => setSelectedPet(pet)}
+                />
+              ) : (
+                <p>No Pet Found</p>
+              )}
+            </div>
+            <p>Status: {form.status}</p>
+            <div className="flex gap-2 mt-4">
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={() => updateStatus(form._id, "approved")}
+              >
+                Approve
+              </button>
+              <button
+                className="bg-yellow-500 text-white px-4 py-2 rounded"
+                onClick={() => updateStatus(form._id, "rejected")}
+              >
+                Reject
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded"
+                onClick={() => setSelectedForm(form)}
+              >
+                Review
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Pet Details Modal */}
-      {selectedPet && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-md w-1/2">
-            <h2 className="text-xl font-bold mb-4">Pet Details</h2>
-            <img
-              src={selectedPet.imageUrl}
-              alt={selectedPet.name}
-              className="w-full h-[300px] object-scale-down rounded-lg mb-4"
-            />
-            <p>
-              <strong>Name:</strong> {selectedPet.name}
-            </p>
-            <p>
-              <strong>Age:</strong> {selectedPet.age}
-            </p>
-            <p>
-              <strong>Description:</strong> {selectedPet.description}
-            </p>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-              onClick={() => setSelectedPet(null)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+        );
+      })}
     </div>
+  </section>
+
+  {/* Approved Forms Section */}
+  <section className="mb-8  text-[#1a79af]">
+    <h2 className="text-xl font-bold mb-4 text-[#013756] ">Approved Forms</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {approvedForms.map((form) => {
+        const pet = getPetById(form.petid);
+        return (
+          <div
+            key={form._id}
+            className="bg-white border border-gray-300 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+          >
+            <p ><span className="font-semibold" >Name:</span> {form.name}</p>
+            <p><span className="font-semibold" >Email:</span> {form.email}</p>
+            <div>
+              <p className="font-semibold">Pet:</p>
+              {pet ? (
+                <img
+                  src={pet.imageUrl}
+                  alt={pet.name}
+                  className="w-full h-[100px] object-scale-down rounded-lg"
+                  onClick={() => setSelectedPet(pet)}
+                />
+              ) : (
+                <p>No Pet Found</p>
+              )}
+            </div>
+            <p><span className="font-semibold" >Status:</span> {form.status}</p>
+            <button
+              className="bg-green-500 text-white px-3 py-2 rounded mt-4 flex items-center justify-between gap-2"
+              onClick={() => setSelectedForm(form)}
+            >
+              <Eye />Review
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  {/* Rejected Forms Section */}
+  <section className="mb-8  text-[#1a79af]">
+    <h2 className="text-xl font-bold mb-4 text-[#013756]">Rejected Forms</h2>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {rejectedForms.map((form) => {
+        const pet = getPetById(form.petid);
+        return (
+          <div
+            key={form._id}
+            className="bg-white border border-gray-300 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+          >
+            <p><span className="font-semibold" >Name:</span> {form.name}</p>
+            <p><span className="font-semibold" >Email:</span> {form.email}</p>
+            <div>
+              <p><span className="font-semibold" >Pet:</span></p>
+              {pet ? (
+                <img
+                  src={pet.imageUrl}
+                  alt={pet.name}
+                  className="w-full h-[100px] object-scale-down rounded-lg"
+                  onClick={() => setSelectedPet(pet)}
+                />
+              ) : (
+                <p>No Pet Found</p>
+              )}
+            </div>
+            <p><span className="font-semibold" >Name:</span> {form.status}</p>
+            <button
+              className="bg-green-500 text-white px-3 py-2 rounded mt-4 flex items-center justify-between gap-2"
+              onClick={() => setSelectedForm(form)}
+            >
+              <Eye />Review
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  {/* Review Form Modal */}
+  {selectedForm && (
+    <div className="fixed inset-0 text-[#013756] bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded shadow-md w-1/2">
+        <h2 className="text-xl font-bold mb-4">Review Form</h2>
+        <p>
+          <strong>Name:</strong> {selectedForm.name}
+        </p>
+        <p>
+          <strong>Email:</strong> {selectedForm.email}
+        </p>
+        <p>
+          <strong>Address:</strong> {selectedForm.address}
+        </p>
+        <p>
+          <strong>First Pet:</strong> {selectedForm.firstpet ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Reason for Adoption:</strong> {selectedForm.whyadopt}
+        </p>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+          onClick={() => setSelectedForm(null)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )}
+
+  {/* Pet Details Model */}
+  {selectedPet && (
+    <div className="fixed inset-0 bg-black text-[#013756] bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-6 rounded shadow-md w-1/2">
+        <h2 className="text-xl font-bold mb-4">Pet Details</h2>
+        <img
+          src={selectedPet.imageUrl}
+          alt={selectedPet.name}
+          className="w-full h-[300px] object-scale-down rounded-lg mb-4"
+        />
+        <p>
+          <strong>Name:</strong> {selectedPet.name}
+        </p>
+        <p>
+          <strong>Age:</strong> {selectedPet.age}
+        </p>
+        <p>
+          <strong>Description:</strong> {selectedPet.description}
+        </p>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+          onClick={() => setSelectedPet(null)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
+
   );
 };
 

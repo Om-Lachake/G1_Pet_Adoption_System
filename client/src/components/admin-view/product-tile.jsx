@@ -3,47 +3,60 @@ import axios from "axios";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { toast } from "react-toastify";
+import {motion} from "framer-motion"
+
 
 const PetTile = ({ pet, onDelete, onEdit }) => {
   return (
-    <div
-      className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/3 2xl:w-1/4 pb-3 rounded-lg border-4 border-blue-500"
-      style={{ backgroundColor: "#c5dbde" }}
+    <div>
+      <motion.div
+      className="w-full max-w-sm mx-auto bg-[#f0f4f8] pb-2 rounded-lg"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+      whileHover={{ scale: 1.02 }}
     >
       <div>
-        <div className="relative border-b-4 border-blue-300">
-          <img
+        <div className="relative">
+          <motion.img
             src={pet.imageUrl}
             alt={pet.name}
-            className="w-full h-[300px] object-scale-down rounded-t-lg"
+            className="w-full h-[300px] object-cover rounded-t-lg"
           />
         </div>
         <div>
-          <h2 className="text-xl font-bold mb-2 mt-4 pl-3 text-center">
-            {pet.name}
-          </h2>
+          <h2 className="text-xl font-bold mb-2 mt-4 pl-3 text-[#013756]">{pet.name}</h2>
           <div className="flex justify-between items-center mb-4 pl-3 mt-4">
-            <span className="text-sm font-semibold text-primary">
-              {pet.description}
+            <span className="text-sm font-semibold text-primary text-[#013756] ">
+            {pet.description}
             </span>
           </div>
         </div>
         <div className="flex px-2 justify-between items-center mx-3 mb-2">
-          <button
+          <motion.button
+            className="px-3 py-1 bg-green-500 rounded-md flex items-center gap-2 justify-between"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onEdit(pet)}
-            className="px-5 py-2 bg-blue-500 text-white rounded-md"
           >
-            <MdEdit className="text-xl" />
-          </button>
-          <button
+            <MdEdit className="text-xl text-zinc-100" />
+            <div className="text-zinc-100" > Edit</div>
+            
+          </motion.button>
+          <motion.button
+            className="px-3 py-1 bg-red-500 rounded-md flex items-center gap-2 justify-between"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onDelete(pet._id)}
-            className="px-5 py-2 bg-blue-500 text-white rounded-md"
           >
-            <MdDelete className="text-xl" />
-          </button>
+            <MdDelete className="text-xl text-zinc-100" />
+            <div className="text-zinc-100" > Delete</div>
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
+
+    </div> 
   );
 };
 

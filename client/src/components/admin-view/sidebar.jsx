@@ -3,18 +3,12 @@ import { useNavigate } from "react-router-dom";
 import {
   FileUser,
   ChartNoAxesCombined,
-  LayoutDashboard,
   PawPrint,
   X, // Add the X icon from lucide-react for the close button
 } from "lucide-react";
 
 const adminSidebarMenuItems = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    path: "/admin/dashboard",
-    icon: <LayoutDashboard />,
-  },
+  
   {
     id: "Pets",
     label: "Pets",
@@ -80,7 +74,7 @@ function MenuItems({ setOpen }) {
             navigate(menuItem.path);
             if (setOpen) setOpen(false);
           }}
-          className="flex cursor-pointer text-xl items-center gap-2 rounded-md px-3 py-2 text-gray-400 hover:bg-gray-300 hover:text-gray-900"
+          className="flex cursor-pointer text-xl items-center gap-2 rounded-md px-3 py-2 text-[#0b80c4] hover:bg-gray-300 hover:text-[#022a42]"
         >
           {menuItem.icon}
           <span>{menuItem.label}</span>
@@ -103,7 +97,7 @@ function AdminSideBar({ open, setOpen }) {
             <SheetHeader className="border-b relative">
               <SheetTitle className="flex gap-2 mt-6 mb-6">
                 <ChartNoAxesCombined size={30} />
-                <h1 className="text-xl font-extrabold">Admin Panel</h1>
+                <h1 className="text-xl font-extrabold ">Admin Panel</h1>
               </SheetTitle>
               {/* Close Button in the Top Right */}
               <button
@@ -119,13 +113,13 @@ function AdminSideBar({ open, setOpen }) {
       </Sheet>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden w-64 flex-col border-r bg-background p-6 lg:flex">
+      <aside className="hidden w-64 flex-col border-r bg-[#F9F9FA] p-6 lg:flex">
         <div
-          onClick={() => navigate("/admin/dashboard")}
+          onClick={() => navigate("/admin/pets")}
           className="flex cursor-pointer items-center gap-2"
         >
-          <ChartNoAxesCombined size={30} />
-          <h1 className="text-2xl font-extrabold">Admin Panel</h1>
+          <ChartNoAxesCombined className="text-[#083e5e]" size={30} />
+          <h1 className="text-2xl text-[#083e5e] font-semibold">Admin Panel</h1>
         </div>
         <MenuItems />
       </aside>

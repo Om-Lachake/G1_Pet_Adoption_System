@@ -26,13 +26,13 @@ const PetImageUpload = ({imageFile,setImageFile,uploadedImageURL,setUploadedImag
       }
 
   return (
-    <div className='w-full max-w-md mx-auto px-6 mt-4' >
-        <div className='text-md font-semibold mb-2 block ' >Upload Images</div>
+    <div className='w-full max-w-md mx-auto px-6 mt-4 text-[#001f3f]' >
+        <div className='text-md font-semibold mb-2 block text-[#001f3f]' >Upload Images</div>
         <div  onDragOver={handleDragOver} onDrop={handleDrop} className='border-2 border-dashed rounded-lg p-4 '>
             <input id='image-upload' type="file" className='hidden' ref={inputRef} onChange={handleImageFileChange} />
             {
                 !imageFile ?
-                <label htmlFor="image-upload" className='flex flex-col items-center justify-center h-32 cursor-pointer' >
+                <label htmlFor="image-upload" className='flex flex-col items-center justify-center h-32 cursor-pointer text-[#001f3f]' >
                     <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
                     <span>Drag & drop or click to upload image</span>
                 </label> :
@@ -43,7 +43,7 @@ const PetImageUpload = ({imageFile,setImageFile,uploadedImageURL,setUploadedImag
                 <p className="text-sm font-medium">{imageFile.name}</p>
                 <button
                   
-                  className="text-zinc-700 hover:text-zinc-900"
+                  className="text-[#001f3f] hover:text-[#483D8B]"
                   onClick={handleRemoveImage}
                 >
                   <XIcon className="w-4 h-4" />
