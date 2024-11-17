@@ -6,7 +6,6 @@ import GoogleAuthPassword from "./pages/auth/googleAuthPassword"
 import NewPassword from "./pages/auth/newPassword"
 import AuthRegister from "./pages/auth/register"
 import AdminLayout from "./components/admin-view/layout"
-import AdminDashboard from "./pages/admin-view/dashboard"
 import AdminPets from "./pages/admin-view/products"
 import AdminOrders from "./pages/admin-view/orders"
 import AdminFeatures from "./pages/admin-view/features"
@@ -61,7 +60,6 @@ function App() {
         <Route path="/admin" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}  >
           <AdminLayout/>
         </CheckAuth>}>
-          <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="pets" element={<AdminPets />} />
           <Route path="applications" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
