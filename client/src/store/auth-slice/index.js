@@ -4,7 +4,7 @@ import axios from "axios";
 const initialState = {
   isAuthenticated: false,
   isVerified: false,
-  isLoggedIn:false,
+  isLoggedIn: false,
   isLoading: true,
   isAdmin: false,
   isLoadingAuth: false,
@@ -31,13 +31,9 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData) => {
-    const response = await axios.post(
-      "http://localhost:3000/login",
-      formData,
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.post("http://localhost:3000/login", formData, {
+      withCredentials: true,
+    });
     console.log(response.data);
     return response.data;
   }
@@ -63,7 +59,7 @@ export const forgotpassword = createAsyncThunk(
 export const newpassword = createAsyncThunk(
   "auth/newpassword",
   async (formData) => {
-    console.log(formData)
+    console.log(formData);
     const response = await axios.post(
       "http://localhost:3000/newpassword",
       formData,
@@ -76,11 +72,11 @@ export const newpassword = createAsyncThunk(
   }
 );
 
-// Async action to handle creation of new password when google login is used for the first time 
+// Async action to handle creation of new password when google login is used for the first time
 export const newgooglepassword = createAsyncThunk(
   "auth/newgooglepassword",
   async (formData) => {
-    console.log(formData)
+    console.log(formData);
     const response = await axios.post(
       "http://localhost:3000/password",
       formData,
@@ -109,46 +105,56 @@ export const verifyOtpAction = createAsyncThunk(
 );
 
 // Async action to log out a user
-export const logoutUser = createAsyncThunk(
-  "auth/logoutUser",
-  async () => {
-    const response = await axios.get(
-      "http://localhost:3000/auth/logout",
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-    return response.data;
-  }
-);
+export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
+  const response = await axios.get(
+    "http://localhost:3000/auth/logout",
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+});
 
 // Async action to check user authentication status
 export const checkAuth = createAsyncThunk(
   "/checkAuth",
-  async (_,{rejectwithvalue}) => {
-    const response = await axios.get(
-      "http://localhost:3000/check-auth",
-      {
-        withCredentials: true,
-        headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-        },
-      }
-    );
+  async (_, { rejectwithvalue }) => {
+    const response = await axios.get("http://localhost:3000/check-auth", {
+      withCredentials: true,
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    });
     return response.data;
   }
 );
 
 export const checkAdmin = createAsyncThunk(
   "/checkAdmin",
-  async (_,{rejectwithvalue}) => {
-    const response = await axios.get(
-      "http://localhost:3000/check-admin",
+  async (_, { rejectwithvalue }) => {
+    const response = await axios.get("http://localhost:3000/check-admin", {
+      withCredentials: true,
+      headers: {
+        "Cache-Control":
+          "no-store, no-cache, must-revalidate, proxy-revalidate",
+      },
+    });
+    return response.data;
+  }
+);
+
+export const createPet = createAsyncThunk(
+  "/admin/createPet",
+  async (formData) => {
+    const response = await axios.post(
+      "http://localhost:3000/happytails/api/pets",
+      formData,
       {
         withCredentials: true,
         headers: {
-          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          "Content-Type": "multipart/form-data",
         },
       }
     );
@@ -156,26 +162,6 @@ export const checkAdmin = createAsyncThunk(
   }
 );
 
-export const createPet = createAsyncThunk(
-  "/admin/createPet",
-  async(formData)=>{
-    //console.log("formdata",formData);
-    const response = await axios.post(
-      "http://localhost:3000/happytails/api/pets",
-      formData,
-      {
-        withCredentials:true,
-        headers: {
-          "Content-Type": "multipart/form-data", // Important for file upload
-        },
-      }
-    );
-    //console.log(response.data)
-    return response.data;
-
-  }
-)
- 
 // set variable based on action
 const authSlice = createSlice({
   name: "auth",
@@ -190,7 +176,7 @@ const authSlice = createSlice({
       state.isVerified = action.payload.isVerified;
       state.isLoggedIn = action.payload.isLoggedIn;
       state.isAdmin = action.payload.isAdmin;
-      console.log("setauthadmin",state.isadmin);
+      console.log("setauthadmin", state.isadmin);
     },
   },
   extraReducers: (builder) => {
@@ -205,7 +191,7 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
         state.isVerified = false; // User still needs to verify OTP
         state.isLoggedIn = false;
-        state.isAdmin = false
+        state.isAdmin = false;
       })
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
@@ -221,7 +207,7 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
         state.isVerified = action.payload.success;
         state.isLoggedIn = false;
-        state.isAdmin =false;
+        state.isAdmin = false;
       })
       .addCase(verifyOtpAction.rejected, (state) => {
         state.isLoading = false;
@@ -237,13 +223,12 @@ const authSlice = createSlice({
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
         state.isVerified = action.payload.success;
-        state.isLoggedIn = action.payload.success; 
+        state.isLoggedIn = action.payload.success;
         state.isAdmin = action.payload.user.admin;
-        console.log("loginuser admin",state.isAdmin);
+        console.log("loginuser admin", state.isAdmin);
       })
       .addCase(loginUser.rejected, (state) => {
         state.isLoading = false;
-        
       })
 
       // Check Authentication Cases
@@ -280,8 +265,8 @@ const authSlice = createSlice({
       })
       .addCase(checkAdmin.rejected, (state) => {
         state.isAdmin = false;
-        state.isLoading =false;
-        state.isLoadingAdmin =false;
+        state.isLoading = false;
+        state.isLoadingAdmin = false;
       })
 
       // Logout User Cases
@@ -361,9 +346,9 @@ const authSlice = createSlice({
         state.isVerified = false;
         state.isLoggedIn = false;
         state.user = null;
-      })
+      });
   },
 });
 
-export const { setUser,setAuthenticated } = authSlice.actions;
+export const { setUser, setAuthenticated } = authSlice.actions;
 export default authSlice.reducer;

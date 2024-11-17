@@ -7,7 +7,7 @@ import NewPassword from "./pages/auth/newPassword"
 import AuthRegister from "./pages/auth/register"
 import AdminLayout from "./components/admin-view/layout"
 import AdminDashboard from "./pages/admin-view/dashboard"
-import AdminProducts from "./pages/admin-view/products"
+import AdminPets from "./pages/admin-view/products"
 import AdminOrders from "./pages/admin-view/orders"
 import AdminFeatures from "./pages/admin-view/features"
 import ShoppingLayout from "./components/shopping-view/layout"
@@ -62,7 +62,7 @@ function App() {
           <AdminLayout/>
         </CheckAuth>}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="pets" element={<AdminProducts />} />
+          <Route path="pets" element={<AdminPets />} />
           <Route path="applications" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
           
