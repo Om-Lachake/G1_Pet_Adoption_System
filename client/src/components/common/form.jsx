@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Input from "../ui/Input"
-import TextArea from "../ui/Textarea"
+import Input from "../custom-ui/Input"
+import TextArea from "../custom-ui/Textarea"
 import {  Lock, Mail, User,Pen } from "lucide-react";
 import { FaGoogle } from 'react-icons/fa'; 
 import {motion} from 'framer-motion'
