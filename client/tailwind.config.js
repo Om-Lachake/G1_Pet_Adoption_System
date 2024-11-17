@@ -8,9 +8,9 @@ export default {
   theme: {
   	extend: {
   		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			lg: '0.5vw',
+  			md: '0.4vw',
+  			sm: '0.1vw'
   		},
   		colors: {
   			background: 'hsl(var(--background))',
