@@ -4,7 +4,7 @@ const nodemailer=require('nodemailer')
 const bcrypt=require('bcrypt')
 const OTPverification = require('../models/OTPverification')
 const {sendGmailOTP} = require ('./OTPControllers.js')
-const {setUser} = require("../service/auth.js")
+const {setUser,setAdmin} = require("../service/auth.js")
 const passport=require("passport")
 
 
@@ -54,6 +54,13 @@ async function checkLoginCredential(req, res) {
                 sameSite: "strict", // Restrict the cookie to same-site requests
                 path: "/"
               });
+            if(user.admin===true) {
+                const atoken=setAdmin(user)
+                //res.cookie("aid",atoken);
+                res.cookie("aid", atoken, { httpOnly: true, sameSite: "strict",path:"/" });
+                return res.json({success:true,message:"logged in successfully",user:user})//create cookie
+                // return res.redirect("/happytails/api/admin")
+            }
             return res.json({success:true,message:"logged in successfully",user:user})//create cookie
         } else {
             return res.json({success:false, message: "Invalid email or password." }); //render login

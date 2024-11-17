@@ -3,13 +3,13 @@ require('dotenv').config()
 const passport=require("passport");
 const loginschema = require('../models/loginschema.js');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const {setUser,getUser} = require("../service/auth.js")
+const {setUser,setAdmin,getUser} = require("../service/auth.js")
 
 //create GoogleStrategy to access sign in via google
 passport.use(new GoogleStrategy({
     clientID:process.env.CLIENT_ID,
     clientSecret:process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/happytails/main",
+    callbackURL: `${process.env.BACKEND_URL}/happytails/main`,
     scope:['profile','email']
   },
   async (accessToken, refreshToken, profile, done) => {
@@ -28,8 +28,14 @@ passport.use(new GoogleStrategy({
       var user=await newuser.save()
       var firstTime=true;
     }
+    let atoken=null;
+    let isadmin=false;
+    if(user.admin) {
+      isadmin=true
+      atoken =setAdmin(user);
+    }
     const token=setUser(user) //create cookie
-    return done(null,{user,token,firstTime}) //pass cookie forward
+    return done(null,{user,token,atoken,firstTime,isadmin}) //pass cookie forward
   }
 ));
 
