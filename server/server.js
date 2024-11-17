@@ -5,6 +5,8 @@ const port=3000
 const connectDB=require('./connect')
 const loginRouter=require('./routes/loginRoutes')
 const mainRouter=require('./routes/mainRoutes')
+const APIRouter=require('./routes/APIRoutes.js')
+const formRouter=require("./routes/formRoutes.js")
 const {restrictToLoggedInUserOnly}=require("./middleware/auth")
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -20,7 +22,7 @@ const app=express()
 app.use( //use cors to communicate with frontend
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST", "DELETE", "PUT"],
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -51,6 +53,9 @@ app.use(express.urlencoded({extended:false}))
 //set routes
 app.use("/",loginRouter)
 app.use("/happytails/user",restrictToLoggedInUserOnly,mainRouter)
+app.use("/happytails/api",restrictToLoggedInUserOnly,APIRouter)
+app.use("/happytails/apply",formRouter)
+
 
 //start server and connect to db
 app.timeout=30000

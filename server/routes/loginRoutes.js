@@ -22,12 +22,15 @@ const {
     checkOTP,
     postResendOTP
 } = require('../controllers/OTPControllers')
-const {restrictToLoggedInUserOnly} = require('../middleware/auth.js')
+const {restrictToLoggedInUserOnly,restrictToAdminOnly} = require('../middleware/auth.js')
 //routing
 router.get('/check-auth', restrictToLoggedInUserOnly, (req, res) => {
     // If the user passed the middleware check, return user info
     res.status(200).json({ success: true, message: "User authenticated", user: req.user });
   });
+router.get('/check-admin',restrictToAdminOnly, (req,res) => {
+  res.json({success:true,message:"admin access granted", user:req.user, isAdmin:true})
+})
 router.post('/signup',createLoginData)
 router.post('/login', checkLoginCredential)
 router.post("/verifyOTP",checkOTP)
@@ -43,14 +46,16 @@ router.get("/happytails/main",
      }), 
     async (req, res) => {
         const token = req.user.token;
+        const atoken = req.user?.atoken;
         const firstTime = req.user.firstTime;
         const message = firstTime ? "create password before login" : "logged in successfully";
-
+        const isadmin= req.user.isadmin;
         // Generate the script for postMessage
+        //console.log(isadmin)
         const script = `
           <script>
             window.opener.postMessage(
-              ${JSON.stringify({ success: true, firsttime: firstTime, message, token })},
+              ${JSON.stringify({ success: true, firsttime: firstTime, message, token,atoken,isadmin })},
               "http://localhost:5173"
             );
             window.close();
@@ -63,6 +68,7 @@ router.get("/happytails/main",
 );
 router.get('/auth/logout', (req, res) => {
     res.clearCookie('uid', { path: '/', httpOnly: true, sameSite: 'strict' });
+    res.clearCookie('aid', { path: '/', httpOnly: true, sameSite: 'strict' });
     return res.status(200).json({ success: true, message: 'Logged out successfully!' });
   });
 //export module

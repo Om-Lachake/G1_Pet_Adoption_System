@@ -21,8 +21,27 @@ function getUser(token) {
     
 }
 
+function setAdmin(user) {
+    return jwt.sign({
+        _id:user._id,
+        email:user.email,
+    },process.env.AKEY);
+}
+
+function getAdmin(token) { 
+    if(!token) return null
+    try {
+        return jwt.verify(token,process.env.AKEY);
+    } catch (error) {
+        return null
+    }
+    
+}
+
 //export module
 module.exports={
     setUser,
-    getUser
+    getUser,
+    setAdmin,
+    getAdmin
 }

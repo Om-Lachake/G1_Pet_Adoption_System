@@ -55,7 +55,25 @@ const sendGmailOTP = async ({_id,email},res) => {
             from: process.env.USER_EMAIL,
             to: email,
             subject: "Verify Your HappyTails account",
-            html: `<p>Enter <b>${otp}</b> in the website to verify your email and complete the signup process.</p><p>This OTP will expire in 1 hour.</p>`,
+            html: `<div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 500px; margin: 20px auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; background-color: #f9f9f9; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                <h2 style="text-align: center; color: #007BFF; font-weight: bold; margin-bottom: 20px;">Email Verification</h2>
+                <p style="font-size: 16px; text-align: center;">
+                    Use the following <strong style="color: #007BFF; font-size: 18px;">OTP</strong> to verify your email:
+                </p>
+                <div style="font-size: 24px; font-weight: bold; color: #007BFF; text-align: center; margin: 20px 0; padding: 10px; border: 1px dashed #007BFF; border-radius: 5px;">
+                    ${otp}
+                </div>
+                <p style="font-size: 16px; text-align: center; margin-bottom: 20px;">
+                    <strong>Note:</strong> This OTP is valid for <strong style="color: #FF0000;">1 hour</strong>.
+                </p>
+                <p style="font-size: 16px; text-align: center;">
+                    Thank you for joining us! If you have any questions, feel free to reach out to our support team.
+                </p>
+                <p style="font-size: 16px; text-align: center; margin-top: 20px; color: #555;">
+                    Best regards,<br>
+                    <strong>HappyTails</strong>
+                </p>
+            </div>`,
         }
         const hashedOTP = await bcrypt.hash(otp, 10);
         const newOTPVerification = new OTPverification({ //create OTP details in db
