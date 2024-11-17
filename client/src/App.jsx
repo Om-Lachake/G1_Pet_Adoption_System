@@ -7,15 +7,15 @@ import NewPassword from "./pages/auth/newPassword"
 import AuthRegister from "./pages/auth/register"
 import AdminLayout from "./components/admin-view/layout"
 import AdminDashboard from "./pages/admin-view/dashboard"
-import AdminProducts from "./pages/admin-view/products"
+import AdminPets from "./pages/admin-view/products"
 import AdminOrders from "./pages/admin-view/orders"
 import AdminFeatures from "./pages/admin-view/features"
 import ShoppingLayout from "./components/shopping-view/layout"
 import NotFound from "./pages/not-found"
-import ShoppingHome from "./pages/shopping-view/home"
-import ShoppingListing from "./pages/shopping-view/listing"
-import ShoppingCheckout from "./pages/shopping-view/checkout"
-import ShoppingAccount from "./pages/shopping-view/account"
+import ShoppingHome from "./pages/pet-view/home"
+import ShoppingListing from "./pages/pet-view/listing"
+import ShoppingCheckout from "./pages/pet-view/checkout"
+import ShoppingAccount from "./pages/pet-view/account"
 import CheckAuth from "./components/common/check-auth"
 import UnAuthPage from "./pages/unauth-page"
 import { useDispatch, useSelector } from "react-redux"
@@ -62,7 +62,7 @@ function App() {
           <AdminLayout/>
         </CheckAuth>}>
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="pets" element={<AdminProducts />} />
+          <Route path="pets" element={<AdminPets />} />
           <Route path="applications" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
           

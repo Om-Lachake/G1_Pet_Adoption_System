@@ -1,13 +1,15 @@
-import React, { Fragment, useState } from 'react';
-import CommonForm from "../../components/common/form"
-import { addPetFormElements } from '../../config/index';
-import {X} from 'lucide-react'
-import PetImageUpload from '../../components/admin-view/image-upload';
-import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import {createPet} from '../../store/auth-slice/index'
-import AdminPetTile from '../../components/admin-view/product-tile';
+import React, { Fragment, useState, useEffect } from "react";
+import CommonForm from "../../components/common/form";
+import { addPetFormElements } from "../../config/index";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import { X } from "lucide-react";
+import axios from "axios";
+import PetImageUpload from "../../components/admin-view/image-upload";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { createPet } from "../../store/auth-slice/index";
+import AdminPetTile from "../../components/admin-view/product-tile";
 // Custom Sheet component
 const Sheet = ({ open, onOpenChange, children }) => {
   return (
@@ -45,7 +47,9 @@ const SheetHeader = ({ className, children, onClose }) => {
         onClick={onClose}
         className="absolute top-4 right-4 border-2 border-muted p-2 rounded-full hover:border-gray-500 focus:outline-none"
       >
-        <span className="text-muted font-bold"><X size={13} /></span>
+        <span className="text-muted font-bold">
+          <X size={13} />
+        </span>
       </button>
       {children}
     </div>
@@ -58,57 +62,88 @@ const SheetTitle = ({ children, className }) => {
 };
 
 const initialFormData = {
-  age:'',
-  name:'',
-  type:'',
-  description:'',
-  gender:'',
-  imageFile:null,
-
-}
-const AdminProducts = () => {
+  age: "",
+  name: "",
+  type: "",
+  description: "",
+  gender: "",
+  imageFile: null,
+};
+const AdminPets = () => {
   const [openAddPetDialog, setOpenAddPetDialog] = useState(false);
-  const [formData,setFormData] = useState(initialFormData);
-  const [imageFile,setImageFile] = useState(null);
-  const [uploadedImageURL,setUploadedImageURL] = useState('');
+  const [formData, setFormData] = useState(initialFormData);
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadedImageURL, setUploadedImageURL] = useState("");
+  const [pets, setPets] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  function onSubmit(event){
+
+  useEffect(() => {
+    const fetchPets = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/happytails/api/pets",
+          {
+            withCredentials: true,
+          }
+        );
+        setPets(response.data.pets);
+      } catch (error) {
+        console.error("Error fetching pets:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPets();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <ClimbingBoxLoader color={"#2563eb"} loading={isLoading} size={30} />
+      </div>
+    );
+  }
+
+  const onSubmit = (event) => {
     event.preventDefault();
-    if (!formData.age || !formData.name || !formData.type ||!formData.description || !formData.gender) {
+
+    if (
+      !formData.age ||
+      !formData.name ||
+      !formData.type ||
+      !formData.description ||
+      !formData.gender
+    ) {
       toast.error("Please enter all the details");
       return;
-    } else {
-      //console.log("here");
-      const form = new FormData();
-      // Append regular form data
-      form.append('name', formData.name);
-      form.append('type', formData.type);
-      form.append('gender', formData.gender);
-      form.append('age', formData.age);
-      form.append('description', formData.description);
-      // Append the image file (this assumes the imageFile is a File object)
-      form.append('file', imageFile);
-      // for (let [key, value] of form.entries()) {
-      //   console.log(key, value);
-      // }
-      dispatch(createPet(form))
-      .then((data) => {
-        if (data?.payload?.success) {
-          //console.log("here 2")
-          toast(data?.payload?.message);
-          setFormData(initialFormData);
-          setImageFile(null);  // Reset the image file state
-          //setOpenAddPetDialog(false);  // Close the form dialog
-        } else {
-          //console.log("here 3")
-          toast(data?.payload?.message);
-          console.log(data?.payload?.message);
-        }
-      });
-      
     }
-  }
+
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("type", formData.type);
+    form.append("gender", formData.gender);
+    form.append("age", formData.age);
+    form.append("description", formData.description);
+    form.append("file", imageFile);
+
+    dispatch(createPet(form)).then((data) => {
+      if (data?.payload?.success) {
+        // Add the new pet to the state without re-fetching
+        //setPets((prevPets) => [...prevPets, newPet]); // Add the new pet to the list
+        setFormData(initialFormData);
+        setImageFile(null); // Reset image state
+        setOpenAddPetDialog(false);
+        window.location.reload(); // Close the form dialog
+      } else {
+        toast(data?.payload?.message);
+        console.error(data?.payload?.message);
+      }
+    });
+  };
+
   return (
     <Fragment>
       <div className="mb-5 w-full flex justify-end">
@@ -120,29 +155,42 @@ const AdminProducts = () => {
         </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        <AdminPetTile/>
+      <div>
+        <AdminPetTile />
       </div>
 
       {/* Sheet (Sidebar) for adding new pet */}
-      <Sheet open={openAddPetDialog} onOpenChange={() => setOpenAddPetDialog(false)}>
-        <SheetContent side="right" className="overflow-auto" open={openAddPetDialog}>
+      <Sheet
+        open={openAddPetDialog}
+        onOpenChange={() => setOpenAddPetDialog(false)}
+      >
+        <SheetContent
+          side="right"
+          className="overflow-auto"
+          open={openAddPetDialog}
+        >
           <SheetHeader onClose={() => setOpenAddPetDialog(false)}>
             <SheetTitle>Add New Pet</SheetTitle>
           </SheetHeader>
-          <PetImageUpload imageFile={imageFile} setImageFile={setImageFile} uploadedImageURL={uploadedImageURL} setUploadedImageURL={setUploadedImageURL} />
+          <PetImageUpload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            uploadedImageURL={uploadedImageURL}
+            setUploadedImageURL={setUploadedImageURL}
+          />
           <div className="p-6">
-            <CommonForm 
+            <CommonForm
               formControls={addPetFormElements}
               formData={formData}
               setFormData={setFormData}
-              ButtonText="Add" 
+              ButtonText="Add"
               onSubmit={onSubmit}
               bgColor="bg-white"
-              borderColor='border-zinc-400'
-              iconKeep = 'false'
-              textColor='text-black'
-              placeHolderColor="placeholder-zinc-900" />
+              borderColor="border-zinc-400"
+              iconKeep="false"
+              textColor="text-black"
+              placeHolderColor="placeholder-zinc-900"
+            />
           </div>
         </SheetContent>
       </Sheet>
@@ -150,4 +198,4 @@ const AdminProducts = () => {
   );
 };
 
-export default AdminProducts;
+export default AdminPets;
