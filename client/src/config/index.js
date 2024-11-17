@@ -172,5 +172,31 @@ export const addPetFormElements = [
   },
 ];
 
-
-
+export const PetViewHeaderMenuItems = [
+  {
+    id: "home",
+    label: "Home",
+    path: "/shop/home",
+  },
+  {
+    id: "pets",
+    label: "Pets",
+    path: "/shop/listing",
+  },
+  {
+    id: "dog",
+    label: "Dog",
+    path: "/shop/listing",
+  },
+  {
+    id: "cat",
+    label: "Cat",
+    path: "/shop/listing",
+  },
+  
+  {
+    id: "bird",
+    label: "Bird",
+    path: "/shop/listing",
+  }
+];
