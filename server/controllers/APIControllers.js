@@ -9,14 +9,21 @@ async function getTest(req,res) {
 }
 async function getAllPets(req,res) {
     try {
-        // Build the query object based on request parameters
         let query = {};
-
+        if (req.query.Category) {
+            const categories = Array.isArray(req.query.Category)
+              ? req.query.Category
+              : req.query.Category.split(','); // Ensure it's an array
+            query.type = { $in: categories.map((type) => new RegExp(`^${type}$`, 'i')) }; // Case-insensitive
+          }
+      
         // Exact match filters
-        if (req.query.type) query.type = req.query.type;
-        if (req.query.gender) query.gender = req.query.gender;
-        
-
+        if (req.query.Gender) {
+            const genders = Array.isArray(req.query.Gender)
+              ? req.query.Gender
+              : req.query.Gender.split(','); // Ensure it's an array
+            query.gender = { $in: genders.map((g) => new RegExp(`^${g}$`, 'i')) }; // Case-insensitive
+          }
         // Partial match filters (using regex for case-insensitive matching)
         if (req.query.name) query.name = new RegExp(req.query.name, 'i');
         if (req.query.description) query.description = new RegExp(req.query.description, 'i');

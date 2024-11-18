@@ -21,7 +21,7 @@ const app=express()
 
 app.use( //use cors to communicate with frontend
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     allowedHeaders: [
       "Content-Type",
@@ -54,7 +54,7 @@ app.use(express.urlencoded({extended:false}))
 app.use("/",loginRouter)
 app.use("/happytails/user",restrictToLoggedInUserOnly,mainRouter)
 app.use("/happytails/api",restrictToLoggedInUserOnly,APIRouter)
-app.use("/happytails/apply",formRouter)
+app.use("/happytails/apply",restrictToLoggedInUserOnly,formRouter)
 
 
 //start server and connect to db
