@@ -3,7 +3,8 @@ import axios from "axios";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { toast } from "react-toastify";
-import {motion} from "framer-motion"
+import {motion} from "framer-motion";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 
 const PetTile = ({ pet, onDelete, onEdit }) => {
@@ -77,13 +78,13 @@ const AdminPetTile = () => {
       try {
         // Fetch pets
         const petsResponse = await axios.get(
-          `http://localhost:3000/happytails/api/pets`,
+          `${BACKEND_URL}/happytails/api/pets`,
           { withCredentials: true }
         );
   
         // Fetch forms with all statuses
         const formsResponse = await axios.get(
-          `http://localhost:3000/happytails/apply/getForm`,
+          `${BACKEND_URL}/happytails/apply/getForm`,
           { withCredentials: true }
         );
   
@@ -113,7 +114,7 @@ const AdminPetTile = () => {
     try {
       // Send delete request to the server
       const response = await axios.delete(
-        `http://localhost:3000/happytails/api/pets/${petId}`,
+        `${BACKEND_URL}/happytails/api/pets/${petId}`,
         {
           withCredentials: true,
         }
@@ -155,7 +156,7 @@ const AdminPetTile = () => {
 
     try {
       const response = await axios.patch(
-        `http://localhost:3000/happytails/api/pets/${editPet._id}`,
+        `${BACKEND_URL}/happytails/api/pets/${editPet._id}`,
         formData,
         {
           headers: {

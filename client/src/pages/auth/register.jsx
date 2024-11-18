@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import CommonForm from '../../components/common/form';
 import { registerFormControls, loginGoogleControls } from '../../config';
 import { registerUser, setAuthenticated } from '../../store/auth-slice';
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const initialState = {//state initialize
   username: "",
   email: "",
@@ -39,14 +39,14 @@ const AuthRegister = () => {
 
     // Open Google OAuth URL in a new window
     const authWindow = window.open(
-      "http://localhost:3000/auth/google",
+      `${BACKEND_URL}/auth/google`,
       "_blank",
       "width=500,height=600"
     );
 
     // Listen for the message from the backend
     window.addEventListener("message", (event) => {
-      if (event.origin !== "http://localhost:3000") return;  // Only accept messages from your backend origin
+      if (event.origin !== `${BACKEND_URL}`) return;  // Only accept messages from your backend origin
     
       const { success, firsttime, message, token,atoken, isadmin } = event.data;
       console.log("eventdata after login",event.data)

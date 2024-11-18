@@ -22,6 +22,7 @@ import { useEffect } from "react"
 import { checkAdmin, checkAuth } from "./store/auth-slice"
 import VerifyOtp from "./pages/verification/verifyOtp"
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import ResendOTP from "./pages/auth/resendOTP"
 
 function App() {
 
@@ -56,6 +57,7 @@ function App() {
           <Route path="forgotpassword" element={<ForgotPassword/>}/>
           <Route path="newpassword" element={<NewPassword/>}/>
           <Route path="googleauthpassword" element={<GoogleAuthPassword/>}/>
+          <Route path="resendOTP" element={<ResendOTP/>}/>
         </Route>
         <Route path="/admin" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}  >
           <AdminLayout/>

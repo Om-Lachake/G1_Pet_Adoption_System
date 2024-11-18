@@ -6,13 +6,14 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { verifyOtpAction, setUser, logoutUser } from '../../store/auth-slice'
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const AdminHeader = ({setOpen}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleLogout = async () => {
     // Dispatch the logout action to reset the Redux state
-    await axios.get("http://localhost:3000/auth/logout", { withCredentials: true });
+    await axios.get(`${BACKEND_URL}/auth/logout`, { withCredentials: true });
     dispatch(logoutUser());
     // Clear the cookie
     const clearAllCookies = () => {
