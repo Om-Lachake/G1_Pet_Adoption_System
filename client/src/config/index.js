@@ -182,21 +182,18 @@ export const PetViewHeaderMenuItems = [
     id: "pets",
     label: "Pets",
     path: "/shop/listing",
-  },
-  {
-    id: "dog",
-    label: "Dog",
-    path: "/shop/listing",
-  },
-  {
-    id: "cat",
-    label: "Cat",
-    path: "/shop/listing",
-  },
-  
-  {
-    id: "bird",
-    label: "Bird",
-    path: "/shop/listing",
   }
 ];
+
+export const filterOptions = {
+  Category: [
+    { id: "dog", label: "Dog" },
+    { id: "cat", label: "Cat" },
+    { id: "bird", label: "Bird" },
+    { id:"hamster", label:"Hamster"}
+  ],
+  Gender: [
+    { id: "male", label: "Male" },
+    { id: "female", label: "Female" }
+  ]
+};
