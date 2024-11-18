@@ -7,6 +7,8 @@ function setUser(user) {
     return jwt.sign({
         _id:user._id,
         email:user.email,
+        username:user.username,
+        admin:user.admin
     },process.env.KEY);
 }
 
@@ -25,6 +27,9 @@ function setAdmin(user) {
     return jwt.sign({
         _id:user._id,
         email:user.email,
+        username:user.username,
+        admin:user.admin
+
     },process.env.AKEY);
 }
 

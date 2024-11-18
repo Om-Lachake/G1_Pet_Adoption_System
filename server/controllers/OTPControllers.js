@@ -145,7 +145,7 @@ async function postResendOTP(req,res) {
                 email:email,
             }
             await sendGmailOTP(data,res); //send OTP email again
-            res.json({success:true, message: "Email sent 12332,4"})
+            res.json({success:true, message: "Email sent"})
         }
     } catch (error) {
         res.json({

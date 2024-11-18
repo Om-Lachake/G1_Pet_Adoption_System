@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import {Eye} from "lucide-react"
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const AdminOrders = () => {
   const [pendingForms, setPendingForms] = useState([]);
@@ -16,7 +17,7 @@ const AdminOrders = () => {
   const fetchFormsByStatus = async (status, setForms) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/happytails/apply/getForm?status=${status}`,
+        `${BACKEND_URL}/happytails/apply/getForm?status=${status}`,
         { withCredentials: true }
       );
       setForms(response.data.forms);
@@ -30,7 +31,7 @@ const AdminOrders = () => {
     const fetchPets = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/happytails/api/pets",
+          `${BACKEND_URL}/happytails/api/pets`,
           { withCredentials: true }
         );
         setPets(response.data.pets);
@@ -54,8 +55,8 @@ const AdminOrders = () => {
   const updateStatus = async (id, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:3000/happytails/apply/updateStatus/${id}`,
-        { status: newStatus }
+        `${BACKEND_URL}/happytails/apply/updateStatus/${id}`,
+        { status: newStatus },{withCredentials:true}
       );
       // Update the relevant state
       setPendingForms((prev) => prev.filter((form) => form._id !== id));
@@ -66,89 +67,6 @@ const AdminOrders = () => {
       toast("Error updating status");
     }
   }; 
-
-  const renderForms = (forms) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    {forms.map((form) => {
-      const pet = getPetById(form.petid);
-      const uniqueKey = `${form._id}-${form.email}`;
-
-      return (
-        <div
-          key={uniqueKey}
-          className="border border-gray-300 p-4 rounded-lg shadow hover:shadow-lg transition-shadow"
-        >
-          {/* Form Details */}
-          <div className="flex flex-col gap-2">
-            {/* Name */}
-            <div>
-              <p className="font-semibold">Name:</p>
-              <p>{form.name}</p>
-            </div>
-
-            {/* Email */}
-            <div>
-              <p className="font-semibold">Email:</p>
-              <p>{form.email}</p>
-            </div>
-
-            {/* Pet */}
-            <div>
-              <p className="font-semibold">Pet:</p>
-              {pet ? (
-                <div
-                  className="relative cursor-pointer"
-                  onClick={() => setSelectedPet(pet)}
-                >
-                  <img
-                    src={pet.imageUrl}
-                    alt={pet.name}
-                    className="w-full h-[100px] object-scale-down rounded-lg"
-                  />
-                </div>
-              ) : (
-                <p>No Pet Found</p>
-              )}
-            </div>
-
-            {/* Status */}
-            <div>
-              <p className="font-semibold">Status:</p>
-              <p>{form.status}</p>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-2 mt-4">
-            {form.status === "pending" && (
-              <>
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                  onClick={() => updateStatus(form._id, "approved")}
-                >
-                  Approve
-                </button>
-                <button
-                  className="bg-yellow-500 text-white px-4 py-2 rounded"
-                  onClick={() => updateStatus(form._id, "rejected")}
-                >
-                  Reject
-                </button>
-              </>
-            )}
-            <button
-              className="bg-green-500 text-white px-4 py-2 rounded"
-              onClick={() => setSelectedForm(form)}
-            >
-              Review
-            </button>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-);
-
 
   return (
 <div className="p-4">
@@ -162,9 +80,10 @@ const AdminOrders = () => {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {pendingForms.map((form) => {
         const pet = getPetById(form.petid);
+        const uniqueKey = `${form._id}-${form.email}`;
         return (
           <div
-            key={form._id}
+            key={uniqueKey}
             className="bg-white border border-gray-300  p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow"
           >
             <p className="font-semibold ">Name: {form.name}</p>

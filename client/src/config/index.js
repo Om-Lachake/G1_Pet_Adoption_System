@@ -187,10 +187,10 @@ export const PetViewHeaderMenuItems = [
 
 export const filterOptions = {
   Category: [
-    { id: "dog", label: "Dog" },
-    { id: "cat", label: "Cat" },
-    { id: "bird", label: "Bird" },
-    { id:"hamster", label:"Hamster"}
+    { id: "Dog", label: "Dog" },
+    { id: "Cat", label: "Cat" },
+    { id: "Bird", label: "Bird" },
+    { id:"Hamster", label:"Hamster"}
   ],
   Gender: [
     { id: "male", label: "Male" },

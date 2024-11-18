@@ -20,7 +20,7 @@ function CheckAuth({ children }) {
       return <Navigate to="/login" />;
     }
   }
-  if (location.pathname === "/forgotpassword" || location.pathname === "/verifyOTP" || location.pathname === "/newpassword") {
+  if (location.pathname === "/forgotpassword" || location.pathname === "/verifyOTP" || location.pathname === "/newpassword" || location.pathname === "/resendOTP") {
     return <>{children}</>;
   }
   else if(isAuthenticated && isVerified && isLoggedIn && (location.pathname === "/login" || location.pathname==="/signup")) {
@@ -37,7 +37,7 @@ function CheckAuth({ children }) {
       return <Navigate to="/signup" />;
     } else {
       if (!isVerified) {
-        return <Navigate to="/verifyOTP" />;
+        return <Navigate to="/resendOTP" />;
       } else {
         if(!isLoggedIn) {
           return <Navigate to="/login" />;

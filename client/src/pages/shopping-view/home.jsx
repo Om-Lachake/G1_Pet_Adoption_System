@@ -8,7 +8,7 @@ const ShoppingHome = () => {
     <div className="min-h-screen bg-[#f0f4f8] flex flex-col items-center">
       {/* Header Section */}
       <div className="text-center mt-10">
-        <h1 className="text-4xl font-bold text-[#013756] mb-4">Welcome to Pet Paradise</h1>
+        <h1 className="text-4xl font-bold text-[#013756] mb-4">Welcome to HappyTails</h1>
         <p className="text-lg text-gray-600">
           Discover your next best friend from our wide range of lovable pets.
         </p>

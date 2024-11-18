@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const initialState = {
   isAuthenticated: false,
@@ -17,7 +18,7 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:3000/signup",
+      `${BACKEND_URL}/signup`,
       formData,
       {
         withCredentials: true,
@@ -27,11 +28,23 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+export const resendotp = createAsyncThunk(
+  "resendotp",
+  async (formData) => {
+    const response = await axios.post(`${BACKEND_URL}/resendOTP`,formData,
+      {
+        withCredentials:true
+      }
+    );
+    return response.data;
+  }
+)
+
 // Async action to log in a user
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData) => {
-    const response = await axios.post("http://localhost:3000/login", formData, {
+    const response = await axios.post(`${BACKEND_URL}/login`, formData, {
       withCredentials: true,
     });
     console.log(response.data);
@@ -44,7 +57,7 @@ export const forgotpassword = createAsyncThunk(
   "auth/forgotpassword",
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:3000/forgotpassword",
+      `${BACKEND_URL}/forgotpassword`,
       formData,
       {
         withCredentials: true,
@@ -61,7 +74,7 @@ export const newpassword = createAsyncThunk(
   async (formData) => {
     console.log(formData);
     const response = await axios.post(
-      "http://localhost:3000/newpassword",
+      `${BACKEND_URL}/newpassword`,
       formData,
       {
         withCredentials: true,
@@ -78,7 +91,7 @@ export const newgooglepassword = createAsyncThunk(
   async (formData) => {
     console.log(formData);
     const response = await axios.post(
-      "http://localhost:3000/password",
+      `${BACKEND_URL}/password`,
       formData,
       {
         withCredentials: true,
@@ -94,7 +107,7 @@ export const verifyOtpAction = createAsyncThunk(
   "auth/verifyOtpAction",
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:3000/verifyOTP",
+      `${BACKEND_URL}/verifyOTP`,
       formData,
       {
         withCredentials: true,
@@ -107,7 +120,7 @@ export const verifyOtpAction = createAsyncThunk(
 // Async action to log out a user
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
   const response = await axios.get(
-    "http://localhost:3000/auth/logout",
+    `${BACKEND_URL}/auth/logout`,
     {},
     {
       withCredentials: true,
@@ -120,7 +133,7 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 export const checkAuth = createAsyncThunk(
   "/checkAuth",
   async (_, { rejectwithvalue }) => {
-    const response = await axios.get("http://localhost:3000/check-auth", {
+    const response = await axios.get(`${BACKEND_URL}/check-auth`, {
       withCredentials: true,
       headers: {
         "Cache-Control":
@@ -134,7 +147,7 @@ export const checkAuth = createAsyncThunk(
 export const checkAdmin = createAsyncThunk(
   "/checkAdmin",
   async (_, { rejectwithvalue }) => {
-    const response = await axios.get("http://localhost:3000/check-admin", {
+    const response = await axios.get(`${BACKEND_URL}/check-admin`, {
       withCredentials: true,
       headers: {
         "Cache-Control":
@@ -149,7 +162,7 @@ export const createPet = createAsyncThunk(
   "/admin/createPet",
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:3000/happytails/api/pets",
+      `${BACKEND_URL}/happytails/api/pets`,
       formData,
       {
         withCredentials: true,
@@ -176,7 +189,6 @@ const authSlice = createSlice({
       state.isVerified = action.payload.isVerified;
       state.isLoggedIn = action.payload.isLoggedIn;
       state.isAdmin = action.payload.isAdmin;
-      console.log("setauthadmin", state.isadmin);
     },
   },
   extraReducers: (builder) => {
@@ -214,6 +226,22 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
       })
 
+      .addCase(resendotp.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(resendotp.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.user;
+        state.isAuthenticated = true;
+        state.isVerified = false;
+        state.isLoggedIn = false;
+        state.isAdmin = false;
+      })
+      .addCase(resendotp.rejected, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+      })
+
       // Login User Cases
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
@@ -224,8 +252,7 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
         state.isVerified = action.payload.success;
         state.isLoggedIn = action.payload.success;
-        state.isAdmin = action.payload.user.admin;
-        console.log("loginuser admin", state.isAdmin);
+        state.isAdmin = action.payload.user?.admin;
       })
       .addCase(loginUser.rejected, (state) => {
         state.isLoading = false;
@@ -240,9 +267,9 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isLoadingAuth = false;
         state.user = action.payload.success ? action.payload.user : null;
-        state.isAuthenticated = action.payload.success;
-        state.isVerified = action.payload.success;
-        state.isLoggedIn = action.payload.success;
+        state.isAuthenticated = true;
+        state.isVerified = true;
+        state.isLoggedIn = true;
       })
       .addCase(checkAuth.rejected, (state) => {
         state.isLoading = false;
@@ -319,7 +346,6 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isVerified = true;
         state.isLoggedIn = true;
-        //////////////////////////////////
       })
       .addCase(newgooglepassword.rejected, (state) => {
         state.isLoading = false;
