@@ -35,6 +35,14 @@ async function createLoginData(req, res) {
     }
 }
 
+async function getUserDetails(req,res) {
+    try {
+        res.json({success:true,user:req.user,message:"user found"})
+    } catch (error) {
+        res.json({success:false,message:"error getting user"})
+    }
+}
+
 
 //for login process
 async function checkLoginCredential(req, res) {
@@ -199,4 +207,5 @@ module.exports={
     postForgotPassword,
     logout,
     postPassword,
+    getUserDetails,
 }
