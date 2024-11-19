@@ -6,6 +6,7 @@ const mongoose=require("mongoose")
 const bcrypt=require("bcrypt")
 const {setUser,getUser} = require("../service/auth.js")
 const loginschema=require('../models/loginschema.js')
+//const {restrictToLoggedInUserOnly} = require('../middleware/auth.js')
 require("../middleware/authgoogle.js")
 require('dotenv').config()
 
@@ -15,7 +16,8 @@ const {
     checkLoginCredential,
     postNewPassword,
     postForgotPassword,
-    postPassword
+    postPassword,
+    getUserDetails
 }=require('../controllers/loginControllers')
 //import functions from OTP controller
 const {
@@ -31,6 +33,7 @@ router.get('/check-auth', restrictToLoggedInUserOnly, (req, res) => {
 router.get('/check-admin',restrictToAdminOnly, (req,res) => {
   res.json({success:true,message:"admin access granted", user:req.user, isAdmin:true})
 })
+router.get('/getUser',restrictToLoggedInUserOnly,getUserDetails)
 router.post('/signup',createLoginData)
 router.post('/login', checkLoginCredential)
 router.post("/verifyOTP",checkOTP)
@@ -50,13 +53,15 @@ router.get("/happytails/main",
         const firstTime = req.user.firstTime;
         const message = firstTime ? "create password before login" : "logged in successfully";
         const isadmin= req.user.isadmin;
+        const user = req.user.user
+        console.log(user)
         // Generate the script for postMessage
         //console.log(isadmin)
         const script = `
           <script>
             window.opener.postMessage(
-              ${JSON.stringify({ success: true, firsttime: firstTime, message, token,atoken,isadmin })},
-              "http://localhost:5173"
+              ${JSON.stringify({ success: true, firsttime: firstTime, message, token,atoken,isadmin,user })},
+              "${process.env.FRONTEND_URL}"
             );
             window.close();
           </script>
