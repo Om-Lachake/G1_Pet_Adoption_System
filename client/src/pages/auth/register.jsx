@@ -12,10 +12,24 @@ const initialState = {//state initialize
   password: "",
 };
 
+function isStrongPassword(password) {
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+  return strongPasswordRegex.test(password);
+}
+
 const AuthRegister = () => {
   const [formData, setFormData] = useState(initialState);
+  const [passwordStrength, setPasswordStrength] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const checkPasswordStrength = (password) => {
+    if (isStrongPassword(password)) {
+      setPasswordStrength("strong");
+    } else {
+      setPasswordStrength("weak");
+    }
+  };
 
   const onSubmit = (event) => {//function to handle sign up
     event.preventDefault();
@@ -23,6 +37,11 @@ const AuthRegister = () => {
       toast.error("Please enter all the details");
       return; // Exit early if validation fails
     }
+    if (passwordStrength !== "strong") {
+      toast.error("Password must be strong: 8+ characters, uppercase, lowercase, number, and special character.");
+      return;
+    }
+
     dispatch(registerUser(formData))
       .then((data) => {
         if (data?.payload?.success) {
@@ -114,9 +133,23 @@ const AuthRegister = () => {
         formControls={registerFormControls}
         ButtonText={"Sign Up"}
         formData={formData}
-        setFormData={setFormData}
+        setFormData={(updatedFormData) => {
+          setFormData(updatedFormData);
+          if (updatedFormData.password) {
+            checkPasswordStrength(updatedFormData.password); 
+          }
+        }}
+
         onSubmit={onSubmit}
       />
+
+
+      {formData.password && (
+        <p className={`mt-1 text-sm ${passwordStrength === "strong" ? "text-green-500" : "text-red-500"}`}>
+          Password strength: {passwordStrength === "strong" ? "Strong" : "Weak"}
+        </p>
+      )}
+      
       <CommonForm
         formControls={loginGoogleControls}
         ButtonText={"Sign up with Google"}
