@@ -54,9 +54,21 @@ router.get("/happytails/main",
         const message = firstTime ? "create password before login" : "logged in successfully";
         const isadmin= req.user.isadmin;
         const user = req.user.user
-        console.log(user)
-        // Generate the script for postMessage
-        //console.log(isadmin)
+        res.cookie('uid', token, {
+            httpOnly: true,
+            secure: true, // Required for SameSite=None
+            sameSite: 'None', // Enable cross-site cookie sharing
+            path: '/',
+        });
+
+        if (atoken) {
+            res.cookie('aid', atoken, {
+                httpOnly: true,
+                secure: true, // Required for SameSite=None
+                sameSite: 'None', // Enable cross-site cookie sharing
+                path: '/',
+            });
+        }
         const script = `
           <script>
             window.opener.postMessage(
@@ -66,15 +78,27 @@ router.get("/happytails/main",
             window.close();
           </script>
         `;
-
         // Send the HTML with the script to the client
         res.send(script);
     }
 );
 router.get('/auth/logout', (req, res) => {
-    res.clearCookie('uid', { path: '/', httpOnly: true, sameSite: 'strict' });
-    res.clearCookie('aid', { path: '/', httpOnly: true, sameSite: 'strict' });
-    return res.status(200).json({ success: true, message: 'Logged out successfully!' });
-  });
+    res.clearCookie('uid', { 
+        path: '/', 
+        httpOnly: true, 
+        sameSite: 'None', 
+        secure: true // Include secure to match cookie attributes
+    });
+    res.clearCookie('aid', { 
+        path: '/', 
+        httpOnly: true, 
+        sameSite: 'None', 
+        secure: true // Include secure to match cookie attributes
+    });
+    return res.status(200).json({ 
+        success: true, 
+        message: 'Logged out successfully!' 
+    });
+});
 //export module
 module.exports=router;

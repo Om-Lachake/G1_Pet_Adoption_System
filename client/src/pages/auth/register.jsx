@@ -68,15 +68,13 @@ const AuthRegister = () => {
       if (event.origin !== `${BACKEND_URL}`) return;  // Only accept messages from your backend origin
     
       const { success, firsttime, message, token,atoken, isadmin } = event.data;
-      console.log("eventdata after login",event.data)
       if (success) {
         // Store the token in localStorage
         if (token) {
-          document.cookie = `uid=${token}; path=/; SameSite=Strict;`;
-          console.log("boolean",isadmin)
+          document.cookie = `uid=${token}; path=/; SameSite=None; Secure;`;
           if (!firsttime) { //if not first time send redirect to home 
             if(isadmin) {
-              document.cookie = `aid=${atoken}; path=/; SameSite=Strict;`;
+              document.cookie = `aid=${atoken}; path=/; SameSite=None; Secure;`;
               dispatch(setAuthenticated({ 
                 isAuthenticated: true, 
                 isVerified: true, 
@@ -93,7 +91,7 @@ const AuthRegister = () => {
                 isLoggedIn: true,
                 isAdmin: false, 
               }));
-              navigate("/shop/home");
+              navigate("/pet/home");
             }
           } else {
             dispatch(setAuthenticated({ //if first time then send to create a password first
@@ -106,7 +104,6 @@ const AuthRegister = () => {
           }
         }
       } else {
-        console.log("faill")
         toast("Authentication failed");
       }
 
@@ -139,17 +136,14 @@ const AuthRegister = () => {
             checkPasswordStrength(updatedFormData.password); 
           }
         }}
-
         onSubmit={onSubmit}
       />
-
-
       {formData.password && (
         <p className={`mt-1 text-sm ${passwordStrength === "strong" ? "text-green-500" : "text-red-500"}`}>
           Password strength: {passwordStrength === "strong" ? "Strong" : "Weak"}
         </p>
       )}
-      
+
       <CommonForm
         formControls={loginGoogleControls}
         ButtonText={"Sign up with Google"}

@@ -1,7 +1,5 @@
 //imports
 const express=require("express")
-
-const port=3000
 const connectDB=require('./connect')
 const loginRouter=require('./routes/loginRoutes')
 const mainRouter=require('./routes/mainRoutes')
@@ -18,6 +16,7 @@ const session = require('express-session');
 const cors = require('cors')
 
 const app=express()
+const port=process.env.PORT || 10000
 
 app.use( //use cors to communicate with frontend
   cors({
@@ -62,7 +61,9 @@ app.timeout=30000
 const start = async ()=>{
     try {
         await connectDB(process.env.MONGO_URI)
-        app.listen(port,console.log("listening"))
+        app.listen(port, '0.0.0.0', () => {
+          console.log(`Server running on http://0.0.0.0:${port}`);
+        });
     } catch (error) {
         console.log(error)
     } 

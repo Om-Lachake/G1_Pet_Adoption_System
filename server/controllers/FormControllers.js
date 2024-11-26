@@ -9,8 +9,6 @@ async function submitForm(req,res) {
                 message: "You can only apply using your registered email.",
             });
         }
-        //console.log(name,email,address,firstpet,whyadopt);
-        console.log(req.user)
         const existingForm = await formschema.findOne({email:email,petid:petid});
         if(existingForm) {
             return res.json({success:false,message:"you have already applied for this pet"});

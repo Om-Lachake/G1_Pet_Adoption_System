@@ -49,7 +49,6 @@ async function createPet(req,res) {
     try {
         const { name, type, gender, age, description} = req.body;
         const file = req.file;
-        //console.log(name, type, gender, age, description, file);
         // Upload image to Firebase Storage
         const blob = bucket.file(Date.now() + path.extname(file.originalname));
         const blobStream = blob.createWriteStream({

@@ -5,7 +5,7 @@ import {  toast } from 'react-toastify';
 import CommonForm from '../../components/common/form';
 import { loginFormControls, loginGoogleControls } from '../../config';
 import { loginUser } from '../../store/auth-slice';
-import { setAuthenticated } from '../../store/auth-slice';
+import { setAuthenticated,setUser } from '../../store/auth-slice';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const initialState = {//initialize state 
   email: "",
@@ -30,7 +30,7 @@ const AuthLogin = () => {
         if(data?.payload?.user?.admin) {
           navigate("/admin/pets")
         } else {
-          navigate("/shop/home")
+          navigate("/pet/home")
         }
       } else {
         if(data.payload.message === "User is not verified") {
@@ -57,14 +57,13 @@ const AuthLogin = () => {
       if (event.origin !== `${BACKEND_URL}`) return;  // Only accept messages from your backend origin
     
       const { success, firsttime, message, token,atoken, isadmin,user } = event.data;
-      console.log("eventdata after login",event.data)
       if (success) {
         // Store the token in localStorage
         if (token) {
-          document.cookie = `uid=${token}; path=/; SameSite=Strict;`;
+          document.cookie = `uid=${token}; path=/; SameSite=None; Secure;`;
           if (!firsttime) { //if not first time send redirect to home 
             if(isadmin) {
-              document.cookie = `aid=${atoken}; path=/; SameSite=Strict;`;
+              document.cookie = `aid=${atoken}; path=/; SameSite=None; Secure;`;
               dispatch(setAuthenticated({ 
                 isAuthenticated: true, 
                 isVerified: true, 
@@ -81,7 +80,7 @@ const AuthLogin = () => {
                 isLoggedIn: true,
                 isAdmin: false, 
               }));
-              navigate("/shop/home");
+              navigate("/pet/home");
             }
           } else {
             dispatch(setAuthenticated({ //if first time then send to create a password first
@@ -90,11 +89,12 @@ const AuthLogin = () => {
               isLoggedIn: false,
               isAdmin: false 
             }));
+            
+            dispatch(setUser({user:user}));
             navigate("/googleAuthPassword");
           }
         }
       } else {
-        console.log("faill")
         toast("Authentication failed");
       }
       // Close the auth window

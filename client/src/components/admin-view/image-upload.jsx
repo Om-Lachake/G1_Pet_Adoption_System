@@ -3,10 +3,7 @@ import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 const PetImageUpload = ({imageFile,setImageFile,uploadedImageURL,setUploadedImageURL}) => {
     const inputRef = useRef(null);
     function handleImageFileChange(event){
-        console.log(event.target.files, "event.target.files");
-        const selectedFile = event.target.files?.[0];
-        console.log(selectedFile);
-    
+        const selectedFile = event.target.files?.[0];    
         if (selectedFile) setImageFile(selectedFile);
     }
     function handleDragOver(event) {

@@ -37,9 +37,9 @@ async function createLoginData(req, res) {
 
 async function getUserDetails(req,res) {
     try {
-        res.json({success:true,user:req.user,message:"user found"})
+        return res.json({success:true,user:req.user,message:"user found"})
     } catch (error) {
-        res.json({success:false,message:"error getting user"})
+        return res.json({success:false,message:"error getting user"})
     }
 }
 
@@ -59,17 +59,18 @@ async function checkLoginCredential(req, res) {
             const token=setUser(user)
             res.cookie("uid", token, { 
                 httpOnly: true, // The cookie is not accessible via JavaScript
-                sameSite: "strict", // Restrict the cookie to same-site requests
-                path: "/"
+                sameSite: "None", // Restrict the cookie to same-site requests
+                path: "/",
+                secure:true
               });
             if(user.admin===true) {
                 const atoken=setAdmin(user)
                 //res.cookie("aid",atoken);
-                res.cookie("aid", atoken, { httpOnly: true, sameSite: "strict",path:"/" });
-                return res.json({success:true,message:"logged in successfully",user:user})//create cookie
+                res.cookie("aid", atoken, { httpOnly: true, sameSite: "None",path:"/",secure:true });
+                return res.json({success:true,message:"Logged in successfully",user:user})//create cookie
                 // return res.redirect("/happytails/api/admin")
             }
-            return res.json({success:true,message:"logged in successfully",user:user})//create cookie
+            return res.json({success:true,message:"Logged in successfully",user:user})//create cookie
         } else {
             return res.json({success:false, message: "Invalid email or password." }); //render login
         } 
@@ -144,7 +145,7 @@ async function postForgotPassword(req,res) {
                 email:email,
             }
             await sendGmailOTP(data,res); //send OTP
-            res.status(200).json({ success:true,message: "Enter new password", redirectTo: "/newpassword" });
+            return res.status(200).json({ success:true,message: "Enter new password", redirectTo: "/newpassword" });
         }
     } catch (error) {
         return res.json({
@@ -172,7 +173,7 @@ async function logout(req,res) {
 
 //create password process for googleAuth
 async function postPassword(req,res) {
-    const email=req.user.email;
+    const email=req.body.email;
     const username=req.body.username;
     const password=req.body.password;
     const rpassword=req.body.rpassword;
@@ -190,11 +191,22 @@ async function postPassword(req,res) {
               });
         } else {
             const newhashedPassword = await bcrypt.hash(req.body.password, 10);
-            console.log(user.password)
             user.password=newhashedPassword
             user.username=username
             await user.save()
-            res.status(200).json({ success:true,message: "User registered", redirectTo: "/happytails/user/main" });
+            const token=setUser(user)
+            res.cookie("uid", token, { 
+                httpOnly: true, // The cookie is not accessible via JavaScript
+                sameSite: "None", // Restrict the cookie to same-site requests
+                path: "/",
+                secure:true
+              });
+            if(user.admin===true) {
+                const atoken=setAdmin(user)
+                res.cookie("aid", atoken, { httpOnly: true, sameSite: "None",path:"/",secure:true });
+                return res.json({success:true,message:"Logged in successfully",user:user})//create cookie
+            }
+            return res.status(200).json({ success:true,message: "User registered and Logged In", redirectTo: "/happytails/user/main" });
         }
     }
 }

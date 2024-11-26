@@ -6,18 +6,17 @@ import { passwordGoogleControls } from '../../config';
 import { newgooglepassword } from '../../store/auth-slice';
 import CommonForm from '../../components/common/form';
 const initialState = {//state initialize
+  email:"",
   username:"",
   password:"",
   rpassword:""
 };
-
 function isStrongPassword(password) {
   const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
   return strongPasswordRegex.test(password);
 }
 
 const GoogleAuthPassword = () => {
-  
   const [formData, setFormData] = useState(initialState);
   const [passwordStrength, setPasswordStrength] = useState("");
   const dispatch = useDispatch();
@@ -49,7 +48,7 @@ const GoogleAuthPassword = () => {
     dispatch(newgooglepassword(formData)).then((data) => {//send request to backend
       if (data?.payload?.success) {
         toast(data?.payload?.message)
-        navigate("/shop/home") //login once password created
+        navigate("/pet/home") //login once password created
       } else {
         toast(data?.payload?.message);
       }
@@ -70,15 +69,17 @@ const GoogleAuthPassword = () => {
           formData={formData}
           setFormData={(updatedFormData) => {
             setFormData(updatedFormData);
-            // if (updatedFormData.password !== formData.password) {
-            //   checkPasswordStrength(updatedFormData.password); 
-            // }
             if (updatedFormData.password) {
               checkPasswordStrength(updatedFormData.password); 
             }
           }}
           onSubmit={onSubmit}
           />
+          {formData.password && (
+            <p className={`mt-1 text-sm ${passwordStrength === "strong" ? "text-green-500" : "text-red-500"}`}>
+              Password strength: {passwordStrength === "strong" ? "Strong" : "Weak"}
+            </p>
+          )}
           
         </div>
   )

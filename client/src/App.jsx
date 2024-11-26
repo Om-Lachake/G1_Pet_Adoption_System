@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom"
 import AuthLayout from "./components/auth/layout"
 import AuthLogin from "./pages/auth/login"
 import ForgotPassword from "./pages/auth/forgotPassword"
-import GoogleAuthPassword from "./pages/auth/googleAuthPassword"
+import GoogleAuthPassword from "./pages/auth/googleauthpassword"
 import NewPassword from "./pages/auth/newPassword"
 import AuthRegister from "./pages/auth/register"
 import AdminLayout from "./components/admin-view/layout"
@@ -67,7 +67,7 @@ function App() {
           <Route path="features" element={<AdminFeatures />} />
           
         </Route>
-        <Route path="/shop" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}  >
+        <Route path="/pet" element={<CheckAuth isAuthenticated={isAuthenticated} user={user}  >
           <ShoppingLayout/>
         </CheckAuth>} >
           <Route path="home" element={<ShoppingHome />} />

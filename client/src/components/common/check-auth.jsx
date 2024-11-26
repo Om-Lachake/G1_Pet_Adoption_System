@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";  // Import useSelector
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 function CheckAuth({ children }) {
   const { isAuthenticated, isVerified, user, isLoggedIn ,isAdmin,isLoading,isLoadingAuth,isLoadingAdmin} = useSelector(state => state.auth);  // Get the values from Redux store
-  console.log(isAuthenticated, isVerified, isLoggedIn, isAdmin,isLoadingAuth,isLoadingAdmin,"in checkauth")
   const location = useLocation();
   if (isLoading || isLoadingAdmin || isLoadingAuth) {
     return <div className="h-screen flex items-center justify-center"><ClimbingBoxLoader
@@ -15,7 +14,7 @@ function CheckAuth({ children }) {
  
   if(!isAdmin && location.pathname === '/admin/pets') {
     if(isAuthenticated && isVerified && isLoggedIn) {
-      return <Navigate to = "/shop/home"/>
+      return <Navigate to = "/pet/home"/>
     } else {
       return <Navigate to="/login" />;
     }
@@ -24,7 +23,7 @@ function CheckAuth({ children }) {
     return <>{children}</>;
   }
   else if(isAuthenticated && isVerified && isLoggedIn && (location.pathname === "/login" || location.pathname==="/signup")) {
-    return <Navigate to = "/shop/home"/>
+    return <Navigate to = "/pet/home"/>
   }
   else if (isAuthenticated && isVerified) {
     if (location.pathname === "/verifyOTP") {
@@ -45,7 +44,7 @@ function CheckAuth({ children }) {
           if (user?.admin === true) {
             return <Navigate to="/admin/pets" />;
           } else {
-            return <Navigate to="/shop/home" />;
+            return <Navigate to="/pet/home" />;
           }
         }
       }
@@ -64,7 +63,7 @@ function CheckAuth({ children }) {
     return <Navigate to="/unauth-page" />;
   }
 
-  else if (isAuthenticated && isVerified && user?.admin === true && location.pathname.includes("shop")) {
+  else if (isAuthenticated && isVerified && user?.admin === true && location.pathname.includes("pet")) {
     return <Navigate to="/admin/pets" />;
   }
 

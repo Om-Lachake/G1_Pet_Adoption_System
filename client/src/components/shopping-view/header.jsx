@@ -83,7 +83,7 @@ function HeaderRightContent({ user, setUser }) {
         >
           <DropdownMenuLabel>Logged in as {user.username}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+          <DropdownMenuItem onClick={() => navigate("/pet/account")}>
             <UserCog className="mr-2 h-4 w-4" />
             Account
           </DropdownMenuItem>
@@ -116,11 +116,10 @@ const ShoppingHeader = () => {
         console.error(err);
       });
   }, []);
-  console.log(user)
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-[#F7F7F7]">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-        <Link to="/shop/home" className="flex items-center gap-2">
+        <Link to="/pet/home" className="flex items-center gap-2">
           <img src="/logopa.png" className="h-16 w-auto " />
         </Link>
         <Sheet>

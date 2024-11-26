@@ -62,7 +62,7 @@ const AdminOrders = () => {
       setPendingForms((prev) => prev.filter((form) => form._id !== id));
       if (newStatus === "approved") setApprovedForms((prev) => [...prev, id]);
       if (newStatus === "rejected") setRejectedForms((prev) => [...prev, id]);
-      toast("Status updated successfully");
+      window.location.reload();
     } catch (err) {
       toast("Error updating status");
     }
@@ -193,7 +193,7 @@ const AdminOrders = () => {
                 <p>No Pet Found</p>
               )}
             </div>
-            <p><span className="font-semibold" >Name:</span> {form.status}</p>
+            <p><span className="font-semibold" >Status:</span> {form.status}</p>
             <button
               className="bg-green-500 text-white px-3 py-2 rounded mt-4 flex items-center justify-between gap-2"
               onClick={() => setSelectedForm(form)}

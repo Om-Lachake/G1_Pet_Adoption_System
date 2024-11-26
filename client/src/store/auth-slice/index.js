@@ -47,7 +47,6 @@ export const loginUser = createAsyncThunk(
     const response = await axios.post(`${BACKEND_URL}/login`, formData, {
       withCredentials: true,
     });
-    console.log(response.data);
     return response.data;
   }
 );
@@ -63,7 +62,6 @@ export const forgotpassword = createAsyncThunk(
         withCredentials: true,
       }
     );
-    console.log(response.data);
     return response.data;
   }
 );
@@ -72,7 +70,6 @@ export const forgotpassword = createAsyncThunk(
 export const newpassword = createAsyncThunk(
   "auth/newpassword",
   async (formData) => {
-    console.log(formData);
     const response = await axios.post(
       `${BACKEND_URL}/newpassword`,
       formData,
@@ -80,7 +77,6 @@ export const newpassword = createAsyncThunk(
         withCredentials: true,
       }
     );
-    console.log(response.data);
     return response.data;
   }
 );
@@ -89,7 +85,6 @@ export const newpassword = createAsyncThunk(
 export const newgooglepassword = createAsyncThunk(
   "auth/newgooglepassword",
   async (formData) => {
-    console.log(formData);
     const response = await axios.post(
       `${BACKEND_URL}/password`,
       formData,
@@ -97,7 +92,6 @@ export const newgooglepassword = createAsyncThunk(
         withCredentials: true,
       }
     );
-    console.log(response.data);
     return response.data;
   }
 );

@@ -118,7 +118,7 @@ async function checkOTP(req,res){
                         await loginschema.updateOne({email:email},{verified:true});
                         await OTPverification.deleteMany({email:email});
                         //res.redirect("/login") //redirect to login after verification
-                        res.json({success : true,message:"verified",isVerified:true,user:{email:email,isVerified:true}})
+                        res.json({success : true,message:"Account Verified",isVerified:true,user:{email:email,isVerified:true}})
                     }
                 }
             }

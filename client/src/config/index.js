@@ -62,6 +62,13 @@ export const loginGoogleControls = [//google oAuth form
 
 export const passwordGoogleControls = [//new password after google sign up form
   {
+    name: "email",
+    label: "Email",
+    placeholder: "Enter your email",
+    componentType: "input",
+    type: "email",
+  },
+  {
     name: "username",
     label: "User Name",
     placeholder: "Enter your user name",
@@ -176,12 +183,12 @@ export const PetViewHeaderMenuItems = [
   {
     id: "home",
     label: "Home",
-    path: "/shop/home",
+    path: "/pet/home",
   },
   {
     id: "pets",
     label: "Pets",
-    path: "/shop/listing",
+    path: "/pet/listing",
   }
 ];
 
