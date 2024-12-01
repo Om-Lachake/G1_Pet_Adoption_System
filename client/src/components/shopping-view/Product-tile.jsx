@@ -72,11 +72,6 @@ const ProductTile = ({ pet, onTileClick }) => {
             <h2 className="text-xl font-bold mb-2 mt-4 pl-3 text-[#013756]">
               {pet.name}
             </h2>
-            <div className="flex justify-between items-center mb-4 pl-3 mt-4">
-              <span className="text-sm font-semibold text-primary text-[#013756]">
-                {pet.description}
-              </span>
-            </div>
           </div>
           <div className="flex justify-between items-center mx-3 mb-2">
             <motion.button
