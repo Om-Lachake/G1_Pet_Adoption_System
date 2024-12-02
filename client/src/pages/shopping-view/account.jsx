@@ -217,7 +217,6 @@
                 />
                 <div className="mt-4 flex flex-col justify-between h-full">
                   <h4 className="text-xl font-semibold text-[#013756]">{pet.name}</h4>
-                  <p className="text-sm text-gray-500 mt-2 h-10">{pet.description}</p>
                   <motion.button
                     className={`mt-4 px-4 py-2 ${application.status == "approved" ? "bg-green-500" : (application.status == "pending" ? "bg-yellow-500" : "bg-red-500") } text-white rounded-md flex items-center justify-center`}
                     initial={{ opacity: 0 }}
