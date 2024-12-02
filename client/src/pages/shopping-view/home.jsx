@@ -4,7 +4,7 @@ import ImageSlider from "./ImageSlider";
 
 const ShoppingHome = () => {
   return (
-    <div className="min-h-screen bg-[#f0f4f8] flex flex-col items-center bg-auto bg-center bg-fixed bg-[url('/images/Userbg.jpg')] ">
+    <div className="min-h-screen bg-[#f0f4f8] flex flex-col items-center bg-auto bg-center bg-fixed bg-[url('/images/myImage.jpeg')] ">
       {/* Header Section */}
       <div className="text-center mt-10">
         <h1 className="text-4xl font-bold text-black mb-4">Welcome to HappyTails</h1>
