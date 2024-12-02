@@ -9,6 +9,8 @@ Welcome to HappyTails, a platform dedicated to connecting pets in need of a lovi
 ---
 ## About the Project
 **HappyTails** is a web-based application designed to bridge the gap between animal shelters and individuals seeking pets. The platform allows users to browse available pets, filter based on preferences, and securely initiate the adoption process. Shelters can manage pet profiles, track adoptions, and communicate with adopters.
+- Watch the user demo [here](https://youtu.be/O3VQIg0fZlE?feature=shared)
+- Watch the admin demo [here](https://youtu.be/gJux4EInqic?feature=shared)
 
 ---
 ## Features
