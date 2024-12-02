@@ -94,11 +94,11 @@ OR follow the steps below ->
 ### Contributors:
 - [@Maharshi Raval - 202201003](https://github.com/Maharshi1808)
 - [@Om Lachake - 202201017](https://github.com/Om-Lachake)
-- [@Vivek Patel - 202201025]()
+- [@Vivek Patel - 202201025](https://github.com/Vivek-Patel03)
 - [@Tanay Jain - 202201026](https://github.com/Tanay2023)
 - [@Bhavya Kantelia - 202201029](https://github.com/Bhavyak-29)
 - [@Anjali Chandwani - 202201032](https://github.com/anjalichandwani12)
-- [@Rajan Moradiya - 202201063]()
+- [@Rajan Moradiya - 202201063](https://github.com/RajanMoradiya)
 - [@Preet Dave - 202201072](https://github.com/DavePreet)
 - [@Snehil Suhas - 202201098](https://github.com/Suhas-Hash)
 
