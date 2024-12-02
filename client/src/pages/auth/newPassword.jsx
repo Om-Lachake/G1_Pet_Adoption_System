@@ -10,16 +10,36 @@ const initialState = {//initialize the state
   otp:"",
   password:"",
 };
+
+function isStrongPassword(password) {
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+  return strongPasswordRegex.test(password);
+}
+
 const NewPassword = () => {
   const [formData, setFormData] = useState(initialState);
+  const [passwordStrength, setPasswordStrength] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
+
+  const checkPasswordStrength = (password) => {
+    if (isStrongPassword(password)) {
+      setPasswordStrength("strong");
+    } else {
+      setPasswordStrength("weak");
+    }
+  };
 
   function onSubmit(event) { //handle setting up of new password
     event.preventDefault();
     if (!formData.email || !formData.password || !formData.OTP) {
       toast.error("Please enter all details");
       return; // Exit early if validation fails
+    }
+
+    if (passwordStrength !== "strong") {
+      toast.error("Password must be strong: 8+ characters, uppercase, lowercase, number, and special character.");
+      return;
     }
 
     dispatch(newpassword(formData)).then((data) => {//send request to backend
@@ -44,9 +64,20 @@ const NewPassword = () => {
           formControls={newPasswordControls}
           ButtonText={"Change Password"}
           formData={formData}
-          setFormData={setFormData}
+          setFormData={(updatedFormData) => {
+            setFormData(updatedFormData);
+            if (updatedFormData.password) {
+              checkPasswordStrength(updatedFormData.password); 
+            }
+          }}
           onSubmit={onSubmit}
           />
+
+        {formData.password && (
+        <p className={`mt-1 text-sm ${passwordStrength === "strong" ? "text-green-500" : "text-red-500"}`}>
+          Password strength: {passwordStrength === "strong" ? "Strong" : "Weak"}
+        </p>
+      )}
           
         </div>
   )
